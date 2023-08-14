@@ -19,7 +19,6 @@ export async function GET() {
         Key: key,
         Expires: 3600,
       };
-      console.log("params", params);
       const presignedUrl = s3.getSignedUrl("getObject", params);
       return { ...list, audioname: presignedUrl };
     });

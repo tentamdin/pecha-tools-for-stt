@@ -4,7 +4,7 @@ import prisma from "@/lib/db";
 import { s3, bucketName } from "@/lib/aws";
 import { NextResponse } from "next/server";
 
-// change all the status to unannotated 
+// change all the status to unannotated
 export const changeAllStatus = async () => {
   const allFiles = await prisma.files.findMany(); // Fetch all records
 
@@ -37,11 +37,9 @@ export const getUnannotatedFiles = async () => {
         Key: key,
         Expires: 3600,
       };
-      console.log("params", params);
       const presignedUrl = s3.getSignedUrl("getObject", params);
       return { ...list, audioname: presignedUrl };
     });
-    console.log("file array", fileArray);
     return fileArray;
   } catch (error) {
     console.error("Error creating post:", error);
@@ -65,7 +63,6 @@ export const getAnnotatedFiles = async () => {
         Key: key,
         Expires: 3600,
       };
-      console.log("params", params);
       const presignedUrl = s3.getSignedUrl("getObject", params);
       return { ...list, audioname: presignedUrl };
     });
@@ -91,5 +88,27 @@ export const updateFiles = async (status, id, transcript) => {
     return updatedFile;
   } catch (error) {
     console.log("Error updating files", error);
+  }
+};
+
+// get file by id
+export const getFileById = async (id) => {
+  try {
+    console.log("id for file", id);
+    const file = await prisma.files.findUnique({
+      where: {
+        id: id,
+      },
+    });
+    const key = file.audioname;
+    const params = {
+      Bucket: bucketName,
+      Key: key,
+      Expires: 3600,
+    };
+    const presignedUrl = s3.getSignedUrl("getObject", params);
+    return { ...file, audioname: presignedUrl };
+  } catch (error) {
+    throw new Error(error);
   }
 };

@@ -6,7 +6,6 @@ import Pagination from "./Pagination";
 
 const AudioSegment = ({ files }) => {
   const [currentPage, setCurrentPage] = useState(1);
-  console.log("file", files);
 
   const filesPerPage = 5;
   const lastFileIndex = currentPage * filesPerPage;
@@ -25,8 +24,7 @@ const AudioSegment = ({ files }) => {
             <p className=" text-2xl font-semibold">Audio Segment {list.id}</p>
             <Link
               href={{
-                pathname: "/unannotated",
-                query: list.id,
+                pathname: `/annotation-tool/${list.id}`,
               }}
               className=" bg-gray-200 border-2 px-2.5 py-1 rounded-md text-black text-md w-1/4 text-center"
               type="button"

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { BsFillPlayFill, BsFillPauseFill } from "react-icons/bs";
 
-export const AudioPlayer = ({ files, index, audioRef }) => {
+export const AudioPlayer = ({ files, index, audioRef, file }) => {
   return (
     <>
       <audio
@@ -9,9 +9,12 @@ export const AudioPlayer = ({ files, index, audioRef }) => {
         className="w-4/5"
         controlsList="nodownload"
         ref={audioRef}
-        key={files[index]?.id}
+        key={file ? file?.id : files[index]?.id}
       >
-        <source src={files[index].audioname} type="audio/mp3" />
+        <source
+          src={file ? file?.audioname : files[index]?.audioname}
+          type="audio/mp3"
+        />
       </audio>
     </>
   );

@@ -1,16 +1,14 @@
 import AudioTranscript from "@/components/AudioTranscript";
 import React from "react";
 import { getUnannotatedFiles } from "../action";
-// import { useRouter } from "next/navigation";
 
-const Annotation = async () => {
+const Annotation = async ({ file }) => {
   const files = await getUnannotatedFiles();
+  console.log("if one file is passed", file);
 
   return (
     <div className="flex flex-col justify-center items-center">
-      <div className="border rounded-md shadow-sm shadow-gray-400 w-4/5 p-5 mt-10">
-        <AudioTranscript files={files} />
-      </div>
+      <AudioTranscript files={files} file={file} />
     </div>
   );
 };
