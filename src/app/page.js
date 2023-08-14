@@ -1,7 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
+import { changeAllStatus } from "./action";
 
-export default function Home() {
+export default async function Home() {
+  const status = await changeAllStatus();
   return (
     <main className="flex min-h-screen flex-col justify-center items-center p-24 gap-4">
       <Link

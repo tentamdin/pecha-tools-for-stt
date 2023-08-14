@@ -9,11 +9,12 @@ import {
   BsSlashCircle,
   BsArrowReturnLeft,
 } from "react-icons/bs";
+import { AudioPlayer } from "./AudioPlayer";
 
 const AudioTranscript = ({ files }) => {
   const [index, setIndex] = useState(0);
   const [transcript, setTranscript] = useState(
-    files ? files[0].transcript : ""
+    files ? files[index].transcript : ""
   );
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef(null);
@@ -32,7 +33,7 @@ const AudioTranscript = ({ files }) => {
   // handle shortcut key "p"
   const handleKeyDown = (event) => {
     console.log("Pressed key:", event.key, " code:", event.code);
-    if (event.code === "p") {
+    if (event.key === "p") {
       setIsPlaying(!isPlaying);
       isPlaying ? audioRef.current.pause() : audioRef.current.play();
     }
@@ -57,79 +58,79 @@ const AudioTranscript = ({ files }) => {
   const updateFileAndIndex = async (status, id, transcript) => {
     console.log("in updateFileAndIndex");
     const response = await updateFiles(status, id, transcript);
-    setIndex(index + 1);
-    // setTranscript(files[index + 1].transcript);
+    if (response) {
+      console.log("update response");
+      setTranscript(files[index + 1].transcript);
+      setIndex(index + 1);
+    }
   };
 
   return (
     <>
-      {files && (
-        <div className="flex flex-col gap-5 items-center">
-          <audio
-            controls
-            className="w-4/5"
-            controlsList="nodownload"
-            ref={audioRef}
+      <div className="flex flex-col gap-5 items-center">
+        <AudioPlayer files={files} index={index} audioRef={audioRef} />
+        <textarea
+          value={transcript || ""}
+          onChange={(e) => setTranscript(e.target.value)}
+          className="rounded-md p-4 h-96 border border-slate-400 w-11/12"
+          placeholder="Type here..."
+          id="transcript"
+        ></textarea>
+        <div className="flex flex-wrap gap-6 justify-center">
+          <button
+            className="bg-white text-gray-800 py-2.5 px-5 border border-gray-400 rounded-lg shadow"
+            onClick={() => handlePlayPause()}
           >
-            <source src={files[index]?.audioname} type="audio/mp3" />
-          </audio>
-          <textarea
-            value={transcript || ""}
-            onChange={(e) => setTranscript(e.target.value)}
-            className="rounded-md p-4 h-96 border border-slate-400 w-11/12"
-            placeholder="Type here..."
-            id="transcript"
-          ></textarea>
-          <div className="flex flex-wrap gap-6 justify-center">
-            <button
-              className="bg-white text-gray-800 py-2.5 px-5 border border-gray-400 rounded-lg shadow"
-              onClick={() => handlePlayPause()}
-            >
-              {isPlaying ? <BsFillPauseFill /> : <BsFillPlayFill />}
-            </button>
-            {speedRate.map((speed) => {
-              return (
-                <button
-                  key={speed}
-                  onClick={() => handlePlayRate(speed)}
-                  className="text-white bg-[#583fcf] hover:bg-purple-600 font-semibold rounded-lg text-sm px-5 py-2.5 outline-none"
-                >
-                  {speed === 1 ? "Normal" : speed + " speed"}
-                </button>
-              );
-            })}
-          </div>
-          <div className="fixed bottom-0 flex gap-1 border shadow-sm p-2">
-            <button
-              type="button"
-              className="focus:outline-none text-white bg-green-700 hover:bg-green-800 font-medium text-sm p-9"
-              onClick={() =>
-                updateFileAndIndex("Submit", files[index]?.id, transcript)
-              }
-            >
-              <BsCheckLg width="5rem" />
-            </button>
-            <button
-              type="button"
-              className="focus:outline-none text-white bg-red-700 hover:bg-red-800 font-medium text-sm p-9"
-            >
-              <BsXLg />
-            </button>
-            <button
-              type="button"
-              className="focus:outline-none text-white bg-gray-400 hover:bg-gray-500 font-medium text-sm p-9"
-            >
-              <BsSlashCircle />
-            </button>
-            <button
-              type="button"
-              className="focus:outline-none text-white bg-gray-400 hover:bg-gray-500 font-medium text-sm p-9"
-            >
-              <BsArrowReturnLeft />
-            </button>
-          </div>
+            {isPlaying ? <BsFillPauseFill /> : <BsFillPlayFill />}
+          </button>
+          {speedRate.map((speed) => {
+            return (
+              <button
+                key={speed}
+                onClick={() => handlePlayRate(speed)}
+                className="text-white bg-[#583fcf] hover:bg-purple-600 font-semibold rounded-lg text-sm px-5 py-2.5 outline-none"
+              >
+                {speed === 1 ? "Normal" : speed + " speed"}
+              </button>
+            );
+          })}
         </div>
-      )}
+        <div className="fixed bottom-0 flex gap-1 border shadow-sm p-2">
+          <button
+            type="button"
+            className="focus:outline-none text-white bg-green-700 hover:bg-green-800 font-medium text-sm p-9"
+            onClick={() =>
+              updateFileAndIndex("submit", files[index]?.id, transcript)
+            }
+          >
+            <BsCheckLg width="5rem" />
+          </button>
+          <button
+            type="button"
+            className="focus:outline-none text-white bg-red-700 hover:bg-red-800 font-medium text-sm p-9"
+            onClick={() =>
+              updateFileAndIndex("flag", files[index]?.id, transcript)
+            }
+          >
+            <BsXLg />
+          </button>
+          <button
+            type="button"
+            className="focus:outline-none text-white bg-gray-400 hover:bg-gray-500 font-medium text-sm p-9"
+            onClick={() =>
+              updateFileAndIndex("ignore", files[index]?.id, transcript)
+            }
+          >
+            <BsSlashCircle />
+          </button>
+          <button
+            type="button"
+            className="focus:outline-none text-white bg-gray-400 hover:bg-gray-500 font-medium text-sm p-9"
+          >
+            <BsArrowReturnLeft />
+          </button>
+        </div>
+      </div>
     </>
   );
 };

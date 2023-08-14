@@ -3,20 +3,22 @@
 import prisma from "@/lib/db";
 import { s3, bucketName } from "@/lib/aws";
 import { NextResponse } from "next/server";
-// get all the files
-// export const getFiles = async (param) => {
-//   console.log("param", param);
-//   const response = await fetch(`http://localhost:3000/api/${param}`, {
-//     next: { revalidate: 60 },
-//   });
-//   if (!response.ok) {
-//     throw new Error("Failed to fetch data");
-//   }
-//   console.log("response is", response.json());
-//   const data = await response.json();
-//   // console.log("response in getFiles", data);
-//   return data;
-// };
+
+// change all the status to unannotated 
+export const changeAllStatus = async () => {
+  const allFiles = await prisma.files.findMany(); // Fetch all records
+
+  for (const file of allFiles) {
+    await prisma.files.update({
+      where: {
+        id: file.id,
+      },
+      data: {
+        status: "unannotated", // Replace with the new status value
+      },
+    });
+  }
+};
 
 // update all unannotated files
 export const getUnannotatedFiles = async () => {
