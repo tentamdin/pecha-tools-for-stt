@@ -7,26 +7,26 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model group {
+model Group {
   id   Int    @id @default(autoincrement())
   name String @db.VarChar(255)
-  task task[]
-  user user[]
+  task Task[]
+  user User[]
 }
 
-model role {
+model Role {
   id   Int    @id @default(autoincrement())
   name String @db.VarChar(255)
-  user user[]
+  user User[]
 }
 
-model state {
+model State {
   id   Int    @id @default(autoincrement())
   name String @db.VarChar(255)
-  task task[]
+  task Task[]
 }
 
-model task {
+model Task {
   id                                Int       @id @default(autoincrement())
   group_id                          Int
   state_id                          Int
@@ -39,15 +39,15 @@ model task {
   transcriber_id                    Int?
   reviewer_id                       Int?
   final_reviewer_id                 Int?
-  created_at                        DateTime? @db.DateTime(0)
-  submitted_on                      DateTime? @db.DateTime(0)
-  reviewed_on                       DateTime? @db.DateTime(0)
-  finalised_reviewed_on             DateTime? @db.DateTime(0)
-  user_task_final_reviewer_idTouser user?     @relation("task_final_reviewer_idTouser", fields: [final_reviewer_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "task_final_reviewer_id_foreign")
-  group                             group     @relation(fields: [group_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "task_group_id_foreign")
-  user_task_reviewer_idTouser       user?     @relation("task_reviewer_idTouser", fields: [reviewer_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "task_reviewer_id_foreign")
-  state                             state     @relation(fields: [state_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "task_state_id_foreign")
-  user_task_transcriber_idTouser    user?     @relation("task_transcriber_idTouser", fields: [transcriber_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "task_transcriber_id_foreign")
+  created_at                        DateTime? @default(now())
+  submitted_on                      DateTime? @updatedAt()
+  reviewed_on                       DateTime? @updatedAt()
+  finalised_reviewed_on             DateTime? @updatedAt()
+  user_task_final_reviewer_idTouser User?     @relation("task_final_reviewer_idTouser", fields: [final_reviewer_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "task_final_reviewer_id_foreign")
+  group                             Group     @relation(fields: [group_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "task_group_id_foreign")
+  user_task_reviewer_idTouser       User?     @relation("task_reviewer_idTouser", fields: [reviewer_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "task_reviewer_id_foreign")
+  state                             State     @relation(fields: [state_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "task_state_id_foreign")
+  user_task_transcriber_idTouser    User?     @relation("task_transcriber_idTouser", fields: [transcriber_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "task_transcriber_id_foreign")
 
   @@index([final_reviewer_id], map: "task_final_reviewer_id_foreign")
   @@index([group_id], map: "task_group_id_foreign")
@@ -56,16 +56,16 @@ model task {
   @@index([transcriber_id], map: "task_transcriber_id_foreign")
 }
 
-model user {
+model User {
   id                                Int    @id @default(autoincrement())
   name                              String @db.VarChar(255)
   group_id                          Int
   role_id                           Int
-  task_task_final_reviewer_idTouser task[] @relation("task_final_reviewer_idTouser")
-  task_task_reviewer_idTouser       task[] @relation("task_reviewer_idTouser")
-  task_task_transcriber_idTouser    task[] @relation("task_transcriber_idTouser")
-  group                             group  @relation(fields: [group_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "user_group_id_foreign")
-  role                              role   @relation(fields: [role_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "user_role_id_foreign")
+  task_task_final_reviewer_idTouser Task[] @relation("task_final_reviewer_idTouser")
+  task_task_reviewer_idTouser       Task[] @relation("task_reviewer_idTouser")
+  task_task_transcriber_idTouser    Task[] @relation("task_transcriber_idTouser")
+  group                             Group  @relation(fields: [group_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "user_group_id_foreign")
+  role                              Role   @relation(fields: [role_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "user_role_id_foreign")
 
   @@index([group_id], map: "user_group_id_foreign")
   @@index([role_id], map: "user_role_id_foreign")
