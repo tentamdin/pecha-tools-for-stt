@@ -1,4 +1,4 @@
-import { getFileById } from "@/app/action";
+import { getFileById } from "@/model/action";
 import React from "react";
 import Annotation from "../page";
 

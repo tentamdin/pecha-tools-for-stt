@@ -2,8 +2,7 @@ import AudioSegment from "@/components/AudioSegment";
 import Pagination from "@/components/Pagination";
 import Link from "next/link";
 import React from "react";
-import { getAnnotatedFiles } from "@/app/action";
-
+import { getAnnotatedFiles } from "@/model/action";
 
 const Annotated = async () => {
   const files = await getAnnotatedFiles();

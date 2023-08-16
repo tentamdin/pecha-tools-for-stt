@@ -1,8 +1,20 @@
 import Link from "next/link";
-import { changeAllStatus } from "./action";
+import { changeAllStatus, getUserTask } from "../model/action";
+import AudioTranscript from "@/components/AudioTranscript";
 
-export default async function Home() {
+export default async function Home({ searchParams }) {
+  const { session } = searchParams;
+  console.log("searchParams", searchParams, "param", session);
+  const userTasks = await getUserTask(session);
+
   // const status = await changeAllStatus();
+  //   return (
+  //     <div className="flex flex-col justify-center items-center">
+  //     <AudioTranscript tasks={userTasks} />
+  //   </div>
+  //   );
+  // }
+
   return (
     <main className="flex min-h-screen flex-col justify-center items-center p-24 gap-4">
       <Link
