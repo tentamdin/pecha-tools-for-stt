@@ -36,7 +36,7 @@ model Task {
   final_transcript                  String?   @db.VarChar(255)
   file_name                         String    @db.VarChar(255)
   url                               String    @db.VarChar(255)
-  transcriber_id                    Int?
+  transcriber_id                    Int?      
   reviewer_id                       Int?
   final_reviewer_id                 Int?
   created_at                        DateTime? @default(now())
@@ -58,7 +58,7 @@ model Task {
 
 model User {
   id                                Int    @id @default(autoincrement())
-  name                              String @db.VarChar(255)
+  name                              String @db.VarChar(255) @unique
   group_id                          Int
   role_id                           Int
   task_task_final_reviewer_idTouser Task[] @relation("task_final_reviewer_idTouser")

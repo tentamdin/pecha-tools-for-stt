@@ -1,6 +1,6 @@
 import AudioTranscript from "@/components/AudioTranscript";
 import React from "react";
-import { getUnannotatedFiles } from "../action";
+import { getUnannotatedFiles } from "../../model/action";
 
 const Annotation = async ({ file }) => {
   const files = await getUnannotatedFiles();
