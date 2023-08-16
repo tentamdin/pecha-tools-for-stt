@@ -58,7 +58,7 @@ model Task {
 
 model User {
   id                                Int    @id @default(autoincrement())
-  name                              String @db.VarChar(255)
+  name                              String @db.VarChar(255) @unique
   group_id                          Int
   role_id                           Int
   task_task_final_reviewer_idTouser Task[] @relation("task_final_reviewer_idTouser")
