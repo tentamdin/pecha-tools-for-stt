@@ -54,7 +54,7 @@ export const getUserTask = async (username) => {
           },
         });
         console.log("reviewerTasks", reviewerTasks);
-        return reviewerTasks;
+        return await preSignedUrlTask(reviewerTasks);
         break;
       case 3:
         // get transcriber tasks
@@ -65,7 +65,7 @@ export const getUserTask = async (username) => {
           },
         });
         console.log("finalReviewerTasks", finalReviewerTasks);
-        return finalReviewerTasks;
+        return await preSignedUrlTask(finalReviewerTasks);
         break;
       default:
         break;
