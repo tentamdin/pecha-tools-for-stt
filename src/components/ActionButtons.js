@@ -10,9 +10,8 @@ import {
 const ActionButtons = ({
   updateFileAndIndex,
   index,
-  files,
+  tasks,
   transcript,
-  file,
 }) => {
   return (
     <>
@@ -23,7 +22,7 @@ const ActionButtons = ({
           onClick={() =>
             updateFileAndIndex(
               "submit",
-              file ? file?.id : files[index]?.id,
+              tasks[index]?.id,
               transcript
             )
           }
@@ -36,7 +35,7 @@ const ActionButtons = ({
           onClick={() =>
             updateFileAndIndex(
               "flag",
-              file ? file?.id : files[index]?.id,
+              tasks[index]?.id,
               transcript
             )
           }
@@ -49,7 +48,7 @@ const ActionButtons = ({
           onClick={() =>
             updateFileAndIndex(
               "ignore",
-              file ? file?.id : files[index]?.id,
+              tasks[index]?.id,
               transcript
             )
           }
