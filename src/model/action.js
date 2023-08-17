@@ -4,7 +4,7 @@ import prisma from "@/lib/db";
 import { s3, bucketName } from "@/lib/aws";
 import { NextResponse } from "next/server";
 
-  //get user detail if exist
+//get user detail if exist
 export const getUserDetails = async (username) => {
   try {
     const userData = await prisma.User.findUnique({
@@ -12,12 +12,12 @@ export const getUserDetails = async (username) => {
         name: username,
       },
     });
-    if(userData === null) {
-      throw new Error("No user found! Please try another.")
+    if (userData === null) {
+      throw new Error("No user found! Please try another.");
     }
     return userData;
   } catch (error) {
-    console.log("erroe", error)
+    console.log("error", error);
     throw new Error("No user found! Please try another");
   }
 };
@@ -40,10 +40,11 @@ export const getUserTask = async (username) => {
           where: {
             group_id: groupId,
             transcriber_id: userId,
+            state_id: 1,
           },
         });
         console.log("transcriberTasks", transcriberTasks);
-        return  await preSignedUrlTask(transcriberTasks);
+        return await preSignedUrlTask(transcriberTasks, roleId, "assign");
         break;
       case 2:
         // get transcriber tasks
@@ -51,10 +52,11 @@ export const getUserTask = async (username) => {
           where: {
             group_id: groupId,
             reviewer_id: userId,
+            state_id: 4,
           },
         });
         console.log("reviewerTasks", reviewerTasks);
-        return await preSignedUrlTask(reviewerTasks);
+        return await preSignedUrlTask(reviewerTasks, roleId);
         break;
       case 3:
         // get transcriber tasks
@@ -62,33 +64,68 @@ export const getUserTask = async (username) => {
           where: {
             group_id: groupId,
             final_reviewer_id: userId,
+            state_id: 5,
           },
         });
         console.log("finalReviewerTasks", finalReviewerTasks);
-        return await preSignedUrlTask(finalReviewerTasks);
+        return await preSignedUrlTask(finalReviewerTasks, roleId);
         break;
       default:
         break;
     }
   } catch (error) {
     console.log("Error occurred while getting user task:", error);
-    throw new Error(er);
+    throw new Error(error);
   }
 };
 
 // return task with presignedurl for audio clip
-export const preSignedUrlTask = async (tasks) => {
-  const taskList = await tasks.map((list) => {
+export const preSignedUrlTask = async (tasks, roleId, action) => {
+  const taskList = await tasks.map( (list) => {
     const key = list.file_name;
     const params = {
       Bucket: bucketName,
       Key: key,
       Expires: 3600,
     };
+    // 
+    const statedTask = changeTaskState(list, roleId, action);
     const presignedUrl = s3.getSignedUrl("getObject", params);
-    return { ...list, url: presignedUrl };
+    console.log("stated taks", statedTask)
+    return { ...statedTask, url: presignedUrl };
   });
   return taskList;
+};
+
+// to change the state of task based on user action (state machine)
+export const changeTaskState = (task, role, action) => {
+  switch (role) {
+    case 1:
+      return  action === "assign"
+        ? { ...task, state_id: 2 }
+        : action === "submit"
+        ? { ...task, state_id: 4 }
+        : action === "trash"
+        ? { ...task, state_id: 3 }
+        : { ...task, state_id: 1 };
+      break;
+    case 2:
+      return  action === "accept"
+        ? { ...task, state_id: 5 }
+        : action === "reject"
+        ? { ...task, state_id: 2 }
+        : { ...task, state_id: 4 };
+      break;
+    case 3:
+      return  action === "finalized"
+        ? { ...task, state_id: 6 }
+        : action === "reject"
+        ? { ...task, state_id: 4 }
+        : { ...task, state_id: 5 };
+      break;
+    default:
+      break;
+  }
 };
 
 // change all the status to unannotated
