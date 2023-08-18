@@ -198,15 +198,19 @@ export const getAnnotatedFiles = async () => {
 };
 
 // update the files
-export const updateFiles = async (status, id, transcript) => {
+export const updateTask = async (action, id, transcript, task) => {
+  console.log("update task", action, id, transcript, task)
+  const changeState = await changeTaskState(task, 1, action);
+  console.log("changeState",changeState);
   try {
-    const updatedFile = await prisma.files.update({
+    const updatedFile = await prisma.Task.update({
       where: {
         id,
       },
       data: {
-        status,
+        state_id: changeState.state_id,
         transcript,
+        url: task.url
       },
     });
     return updatedFile;
