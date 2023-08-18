@@ -1,6 +1,6 @@
 "use client";
 
-import { updateFiles } from "@/model/action";
+import { updateTask } from "@/model/action";
 import React, { useState, useRef, useEffect } from "react";
 import { BsFillPlayFill, BsFillPauseFill } from "react-icons/bs";
 import { AudioPlayer } from "./AudioPlayer";
@@ -15,21 +15,19 @@ const AudioTranscript = ({ tasks, userDetail }) => {
   const router = useRouter();
   const [anyTask, setAnyTask] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  let lastTaskIndex = tasks.length - 1;
 
-
-
-
-  useEffect(() => {        
+  useEffect(() => {
     let isMounted = true;
     const { role_id: roleId } = userDetail;
     console.log("user details", userDetail, roleId, tasks);
     if (tasks.length != 0) {
-      setAnyTask(true)
-      setIsLoading(false)
+      setAnyTask(true);
+      setIsLoading(false);
       switch (roleId) {
         case 1:
           console.log("inside switch 1");
-          setTranscript(tasks[index].inference_transcript);
+          setTranscript(tasks[index].inference_transcript)
           break;
         case 2:
           setTranscript(tasks[index].transcript);
@@ -41,8 +39,8 @@ const AudioTranscript = ({ tasks, userDetail }) => {
           break;
       }
     } else {
-      setAnyTask(false)
-      setIsLoading(false)
+      setAnyTask(false);
+      setIsLoading(false);
       console.log("No task", tasks);
     }
     // listening to keyborad events to trigger shortcuts
@@ -50,7 +48,7 @@ const AudioTranscript = ({ tasks, userDetail }) => {
     return () => {
       // Clean up the event listener when the component unmounts
       document.removeEventListener("keydown", handleKeyDown);
-      isMounted = false; 
+      isMounted = false;
     };
   }, []);
 
@@ -79,16 +77,17 @@ const AudioTranscript = ({ tasks, userDetail }) => {
 
   const speedRate = [0.5, 0.75, 1, 1.25, 1.5, 2];
 
-  const updateFileAndIndex = async (status, id, transcript) => {
+  const updateTaskAndIndex = async (action, id, transcript, task) => {
     console.log("in updateFileAndIndex");
     try {
-      const response = await updateFiles(status, id, transcript);
-      if (file && response) {
-        router.push("/");
-      } else {
-        setTranscript(files[index + 1].transcript);
+      const response = await updateTask(action, id, transcript, task);
+      if(lastTaskIndex != index) {
+        setTranscript(tasks[index + 1].inference_transcript);
         setIndex(index + 1);
+      }else {
+        setAnyTask(false)
       }
+      console.log("response", response)
     } catch (error) {
       throw new Error(error);
     }
@@ -96,13 +95,11 @@ const AudioTranscript = ({ tasks, userDetail }) => {
 
   return (
     <>
-      {isLoading ? 
-        (
+      {isLoading ? (
         <div className="flex min-h-screen flex-col justify-center items-center">
           <h1 className="font-bold text-3xl">loading...</h1>
         </div>
-        ) : anyTask ? 
-        (
+      ) : anyTask ? (
         <>
           <div className="border rounded-md shadow-sm shadow-gray-400 w-4/5 p-5 mt-10">
             <div className="flex flex-col gap-5 items-center">
@@ -136,14 +133,17 @@ const AudioTranscript = ({ tasks, userDetail }) => {
             </div>
           </div>
           <ActionButtons
-            updateFileAndIndex={updateFileAndIndex}
+            updateTaskAndIndex={updateTaskAndIndex}
             tasks={tasks}
             index={index}
-            transcript={transcript}/>
+            transcript={transcript}
+          />
         </>
       ) : (
         <div className="flex min-h-screen flex-col justify-center items-center">
-          <h1 className="font-bold text-3xl">No task found, will allocate sonon</h1>
+          <h1 className="font-bold text-3xl">
+            No task found, will allocate sonon
+          </h1>
         </div>
       )}
     </>

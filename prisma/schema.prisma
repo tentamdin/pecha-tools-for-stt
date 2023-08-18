@@ -35,7 +35,7 @@ model Task {
   reviewed_transcript               String?   @db.VarChar(255)
   final_transcript                  String?   @db.VarChar(255)
   file_name                         String    @db.VarChar(255)
-  url                               String    @db.VarChar(255)
+  url                               String    @db.Text
   transcriber_id                    Int?      
   reviewer_id                       Int?
   final_reviewer_id                 Int?
