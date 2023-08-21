@@ -2,7 +2,6 @@
 
 import prisma from "@/lib/db";
 import { s3, bucketName } from "@/lib/aws";
-import { NextResponse } from "next/server";
 
 //get user detail if exist
 export const getUserDetails = async (username) => {
@@ -22,6 +21,26 @@ export const getUserDetails = async (username) => {
   }
 };
 
+//geting user's asigned tasks
+export const getAssingedTask = async (groupId, stateId, userId) => {
+  try {
+    const assingedTasks = await prisma.Task.findMany({
+      where: {
+        group_id: groupId,
+        state_id: stateId,
+        transcriber_id: userId,
+      },
+    });
+    if (assingedTasks === null) {
+      throw new Error("No task found for user!.");
+    }
+    return assingedTasks;
+  } catch (error) {
+    console.log("error", error);
+    throw new Error("No task found for user! Please try another");
+  }
+};
+
 // get task based on username
 export const getUserTask = async (username) => {
   const userData = await getUserDetails(username);
@@ -36,15 +55,16 @@ export const getUserTask = async (username) => {
     switch (roleId) {
       case 1:
         // get transcriber tasks
-        const transcriberTasks = await prisma.Task.findMany({
-          where: {
-            group_id: groupId,
-            transcriber_id: userId,
-            state_id: 1,
-          },
-        });
-        console.log("transcriberTasks", transcriberTasks);
+        const transcriberTasks = await getAssingedTask(groupId, 1, userId);
+        if(transcriberTasks.length == 0){
+          // assign some tasks
+        const assignedTranscriberTask = await assignTasks(groupId, 1, userId);
+        console.log("assignedTranscriberTask", assignedTranscriberTask);
+        return await preSignedUrlTask(Object.values(assignedTranscriberTask), roleId, "assign");
+        }else {
+        console.log("transcriberTasks", transcriberTasks, transcriberTasks.length);
         return await preSignedUrlTask(transcriberTasks, roleId, "assign");
+        }
         break;
       case 2:
         // get transcriber tasks
@@ -79,9 +99,65 @@ export const getUserTask = async (username) => {
   }
 };
 
+// assign tasks to user when got no task to work on
+export const assignTasks = async (groupId, stateId, userId) => {
+  let assignedTasks;
+
+  //first get all the unassigned tasks and assign some to user and give back to user
+  const unassignedTasks = await prisma.Task.findMany({
+    where: {
+      group_id: groupId,
+      state_id: stateId,
+      transcriber_id: null
+    },
+    // filteration of lastest or old task could come here
+    take: 20,
+  });
+  console.log("unassignedTasks are", unassignedTasks);
+  if(unassignedTasks.length === 0 ){
+    return assignedTasks = unassignedTasks;
+  } else {
+
+  const assignedTaskCount = await prisma.Task.updateMany({
+    where: {
+      id: { in : unassignedTasks?.map(task => task.id)}
+    },
+    data: {
+      transcriber_id: userId
+    }
+  });
+  console.log("assignedTaskCount", assignedTaskCount);
+  //updatedManyTask { count: 3 }
+  if(assignedTaskCount?.count > 0) {
+    assignedTasks = await getAssingedTask(groupId, stateId, userId);
+  }
+  console.log("assignedTasks", assignedTasks);
+  return assignedTasks;
+}
+  // const assignedTask = unassignedTasks.map(task => { 
+  //   const updatedTasked = updateId(task, userId)/
+  //   console.log("updatedTasked", updatedTasked);
+  //   return { ...task, transcriber_id: userId}
+  // });
+
+}
+
+export const updateId = async (task, userId) => {
+  const updatedTasked = await prisma.Task.update({
+    where: {
+      id: task.id,
+    },
+    data: {
+      transcriber_id: userId
+    }
+  })
+  return updatedTasked;
+}
 // return task with presignedurl for audio clip
 export const preSignedUrlTask = async (tasks, roleId, action) => {
+  console.log("preSignedUrlTask");
   const taskList = await tasks.map( (list) => {
+    console.log("key 1", list.file_name)
     const key = list.file_name;
     const params = {
       Bucket: bucketName,
@@ -91,7 +167,6 @@ export const preSignedUrlTask = async (tasks, roleId, action) => {
     // 
     const statedTask = changeTaskState(list, roleId, action);
     const presignedUrl = s3.getSignedUrl("getObject", params);
-    console.log("stated taks", statedTask)
     return { ...statedTask, url: presignedUrl };
   });
   return taskList;
@@ -144,58 +219,6 @@ export const changeAllStatus = async () => {
   }
 };
 
-// update all unannotated files
-export const getUnannotatedFiles = async () => {
-  try {
-    const files = await prisma.files.findMany({
-      where: {
-        status: {
-          equals: "unannotated",
-        },
-      },
-    });
-    const fileArray = await files.map((list) => {
-      const key = list.audioname;
-      const params = {
-        Bucket: bucketName,
-        Key: key,
-        Expires: 3600,
-      };
-      const presignedUrl = s3.getSignedUrl("getObject", params);
-      return { ...list, audioname: presignedUrl };
-    });
-    return fileArray;
-  } catch (error) {
-    console.error("Error creating post:", error);
-  }
-};
-
-// update all annotated files
-export const getAnnotatedFiles = async () => {
-  try {
-    const files = await prisma.files.findMany({
-      where: {
-        status: {
-          not: "unannotated",
-        },
-      },
-    });
-    const fileArray = await files.map((list) => {
-      const key = list.audioname;
-      const params = {
-        Bucket: bucketName,
-        Key: key,
-        Expires: 3600,
-      };
-      const presignedUrl = s3.getSignedUrl("getObject", params);
-      return { ...list, audioname: presignedUrl };
-    });
-    console.log("file array", fileArray);
-    return fileArray;
-  } catch (error) {
-    console.error("Error creating post:", error);
-  }
-};
 
 // update the files
 export const updateTask = async (action, id, transcript, task) => {

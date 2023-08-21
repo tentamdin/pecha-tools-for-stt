@@ -12,22 +12,22 @@ const AudioTranscript = ({ tasks, userDetail }) => {
   const [transcript, setTranscript] = useState("");
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef(null);
-  const router = useRouter();
   const [anyTask, setAnyTask] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  let lastTaskIndex = tasks.length - 1;
+  let lastTaskIndex = tasks.length != 0 ? tasks?.length - 1 : 0;
 
   useEffect(() => {
     let isMounted = true;
     const { role_id: roleId } = userDetail;
-    console.log("user details", userDetail, roleId, tasks);
+    console.log("user details", userDetail, roleId, tasks, lastTaskIndex);
     if (tasks.length != 0) {
       setAnyTask(true);
       setIsLoading(false);
       switch (roleId) {
         case 1:
-          console.log("inside switch 1");
-          setTranscript(tasks[index].inference_transcript)
+          console.log("inside switch 1", tasks[index].transcript === null);
+          tasks[index].transcript != null ? setTranscript(tasks[index].transcript):
+          setTranscript(tasks[index].inference_transcript);
           break;
         case 2:
           setTranscript(tasks[index].transcript);
@@ -77,8 +77,10 @@ const AudioTranscript = ({ tasks, userDetail }) => {
 
   const speedRate = [0.5, 0.75, 1, 1.25, 1.5, 2];
 
-  const updateTaskAndIndex = async (action, id, transcript, task) => {
+  const updateTaskAndIndex = async (action, transcript, task) => {
     console.log("in updateFileAndIndex");
+    const { id } = task;
+    console.log("task id", id);
     try {
       const response = await updateTask(action, id, transcript, task);
       if(lastTaskIndex != index) {
@@ -142,7 +144,7 @@ const AudioTranscript = ({ tasks, userDetail }) => {
       ) : (
         <div className="flex min-h-screen flex-col justify-center items-center">
           <h1 className="font-bold text-3xl">
-            No task found, will allocate sonon
+            No task found, will allocate soon
           </h1>
         </div>
       )}
