@@ -18,13 +18,13 @@ const ActionButtons = ({ updateTaskAndIndex, index, tasks, transcript }) => {
           onClick={() =>
             updateTaskAndIndex(
               "submit",
-              tasks[index]?.id,
               transcript,
               tasks[index]
             )
           }
         >
           <BsCheckLg width="5rem" />
+          <p>Submit</p>
         </button>
         <button
           type="button"
@@ -32,13 +32,13 @@ const ActionButtons = ({ updateTaskAndIndex, index, tasks, transcript }) => {
           onClick={() =>
             updateTaskAndIndex(
               "reject",
-              tasks[index]?.id,
               transcript,
               tasks[index]
             )
           }
         >
           <BsXLg />
+          <p>Reject</p>
         </button>
         <button
           type="button"
@@ -46,19 +46,27 @@ const ActionButtons = ({ updateTaskAndIndex, index, tasks, transcript }) => {
           onClick={() =>
             updateTaskAndIndex(
               "trash",
-              tasks[index]?.id,
               transcript,
               tasks[index]
             )
           }
         >
           <BsTrash />
+          <p>Trash</p>
         </button>
         <button
           type="button"
           className="focus:outline-none text-white bg-gray-400 hover:bg-gray-500 font-medium text-sm p-9"
+          onClick={() =>
+            updateTaskAndIndex(
+              "save",
+              transcript,
+              tasks[index]
+            )
+          }
         >
           <BsArrowReturnLeft />
+          <p>Save</p>
         </button>
       </div>
     </>
