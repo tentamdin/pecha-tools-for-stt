@@ -18,21 +18,22 @@ const AudioTranscript = ({ tasks, userDetail }) => {
 
   useEffect(() => {
     let isMounted = true;
-    const { role_id: roleId } = userDetail;
-    console.log("user details", userDetail, roleId, tasks, lastTaskIndex);
+    const { role } = userDetail;
+    console.log("user details", userDetail, "user task", tasks, lastTaskIndex);
     if (tasks.length != 0) {
       setAnyTask(true);
       setIsLoading(false);
-      switch (roleId) {
-        case 1:
+      switch (role) {
+        case "TRANSCRIBER":
           console.log("inside switch 1", tasks[index].transcript === null);
           tasks[index].transcript != null ? setTranscript(tasks[index].transcript):
           setTranscript(tasks[index].inference_transcript);
           break;
-        case 2:
+        case "REVIEWER":
+          tasks[index].reviewed_transcript != null ? setTranscript(tasks[index].reviewed_transcript):
           setTranscript(tasks[index].transcript);
           break;
-        case 3:
+        case "FINAL_REVIEWER":
           setTranscript(tasks[index].reviewed_transcript);
           break;
         default:
@@ -80,9 +81,10 @@ const AudioTranscript = ({ tasks, userDetail }) => {
   const updateTaskAndIndex = async (action, transcript, task) => {
     console.log("in updateFileAndIndex");
     const { id } = task;
-    console.log("task id", id);
+    const { role } = userDetail;
+    console.log("task id", id, "role", role);
     try {
-      const response = await updateTask(action, id, transcript, task);
+      const response = await updateTask(action, id, transcript, task, role);
       if(lastTaskIndex != index) {
         setTranscript(tasks[index + 1].inference_transcript);
         setIndex(index + 1);
