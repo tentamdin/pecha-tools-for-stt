@@ -8,7 +8,7 @@ import {
   BsTrash,
 } from "react-icons/bs";
 
-const ActionButtons = ({ updateTaskAndIndex, index, tasks, transcript }) => {
+const ActionButtons = ({ updateTaskAndIndex, index, tasks, transcript, role }) => {
   return (
     <>
       <div className="fixed bottom-0 flex gap-1 border shadow-sm p-2">
@@ -26,6 +26,7 @@ const ActionButtons = ({ updateTaskAndIndex, index, tasks, transcript }) => {
           <BsCheckLg width="5rem" />
           <p>Submit</p>
         </button>
+        {role !== "TRANSCRIBER" && (
         <button
           type="button"
           className="focus:outline-none text-white bg-red-700 hover:bg-red-800 font-medium text-sm p-9"
@@ -40,6 +41,7 @@ const ActionButtons = ({ updateTaskAndIndex, index, tasks, transcript }) => {
           <BsXLg />
           <p>Reject</p>
         </button>
+        ) } 
         <button
           type="button"
           className="focus:outline-none text-white bg-gray-400 hover:bg-gray-500 font-medium text-sm p-9"
