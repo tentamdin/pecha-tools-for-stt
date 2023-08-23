@@ -39,7 +39,7 @@ model Task {
   reviewed_transcript   String?   @db.VarChar(255)
   final_transcript      String?   @db.VarChar(255)
   file_name             String    @db.VarChar(255)
-  url                   String    @db.Text
+  url                   String?    @db.Text
   transcriber_id        Int?
   transcriber           User?     @relation("TranscriberTasks", fields: [transcriber_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "task_transcriber_id_foreign")
   reviewer_id           Int?
