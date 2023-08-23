@@ -14,10 +14,10 @@ const AudioTranscript = ({ tasks, userDetail }) => {
   const [anyTask, setAnyTask] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   let lastTaskIndex = tasks.length != 0 ? tasks?.length - 1 : 0;
+  const { role } = userDetail;
 
   useEffect(() => {
     let isMounted = true;
-    const { role } = userDetail;
     console.log("user details", userDetail, "user task", tasks, lastTaskIndex);
     if (tasks.length != 0) {
       setAnyTask(true);
@@ -68,7 +68,6 @@ const AudioTranscript = ({ tasks, userDetail }) => {
   const updateTaskAndIndex = async (action, transcript, task) => {
     console.log("in updateFileAndIndex");
     const { id } = task;
-    const { role } = userDetail;
     console.log("task id", id, "role", role);
     try {
       const response = await updateTask(action, id, transcript, task, role);
@@ -128,6 +127,7 @@ const AudioTranscript = ({ tasks, userDetail }) => {
             tasks={tasks}
             index={index}
             transcript={transcript}
+            role={role}
           />
         </>
       ) : (

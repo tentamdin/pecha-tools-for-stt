@@ -281,6 +281,8 @@ export const changeTaskState = (task, role, action) => {
         ? { ...task, state: "accepted" }
         : action === "reject"
         ? { ...task, state: "transcribing" }
+        : action === "trash"
+        ? { ...task, state: "trashed" }
         : { ...task, state: "submitted" };
       break;
     case "FINAL_REVIEWER":
@@ -288,6 +290,8 @@ export const changeTaskState = (task, role, action) => {
         ? { ...task, state: "finalised" }
         : action === "reject"
         ? { ...task, state: "submitted" }
+        : action === "trash"
+        ? { ...task, state: "trashed" }
         : { ...task, state: "accepted" };
       break;
     default:
@@ -310,7 +314,7 @@ export const updateTask = async (action, id, transcript, task, role) => {
           },
           data: {
             state: changeState.state,
-            transcript,
+            transcript: changeState.state === "trashed" ? null : transcript,
             url: task.url,
           },
         });
