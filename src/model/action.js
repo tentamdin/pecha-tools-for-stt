@@ -154,7 +154,7 @@ export const assignTasks = async (groupId, userId, role) => {
             orderBy: {
               id: "asc",
             },
-            take: 20,
+            take: 5,
           });
           console.log("unassignedTasks are", unassignedTasks);
 
