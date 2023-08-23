@@ -25,12 +25,14 @@ const AudioTranscript = ({ tasks, userDetail }) => {
       switch (role) {
         case "TRANSCRIBER":
           console.log("inside switch 1", tasks[index].transcript === null);
-          tasks[index].transcript != null ? setTranscript(tasks[index].transcript):
-          setTranscript(tasks[index].inference_transcript);
+          tasks[index].transcript != null
+            ? setTranscript(tasks[index].transcript)
+            : setTranscript(tasks[index].inference_transcript);
           break;
         case "REVIEWER":
-          tasks[index].reviewed_transcript != null ? setTranscript(tasks[index].reviewed_transcript):
-          setTranscript(tasks[index].transcript);
+          tasks[index].reviewed_transcript != null
+            ? setTranscript(tasks[index].reviewed_transcript)
+            : setTranscript(tasks[index].transcript);
           break;
         case "FINAL_REVIEWER":
           setTranscript(tasks[index].reviewed_transcript);
@@ -47,7 +49,6 @@ const AudioTranscript = ({ tasks, userDetail }) => {
       isMounted = false;
     };
   }, []);
-
 
   const handlePlayPause = () => {
     if (isPlaying) {
@@ -71,13 +72,13 @@ const AudioTranscript = ({ tasks, userDetail }) => {
     console.log("task id", id, "role", role);
     try {
       const response = await updateTask(action, id, transcript, task, role);
-      if(lastTaskIndex != index) {
+      if (lastTaskIndex != index) {
         setTranscript(tasks[index + 1].inference_transcript);
         setIndex(index + 1);
-      }else {
-        setAnyTask(false)
+      } else {
+        setAnyTask(false);
       }
-      console.log("response", response)
+      console.log("response", response);
     } catch (error) {
       throw new Error(error);
     }
@@ -91,6 +92,12 @@ const AudioTranscript = ({ tasks, userDetail }) => {
         </div>
       ) : anyTask ? (
         <>
+          {role === "REVIEWER" && (
+            <p className="mt-10">
+              <strong>Transcribed By : </strong>
+              {tasks[index].transcriber?.name}
+            </p>
+          )}
           <div className="border rounded-md shadow-sm shadow-gray-400 w-4/5 p-5 mt-10">
             <div className="flex flex-col gap-5 items-center">
               <AudioPlayer tasks={tasks} index={index} audioRef={audioRef} />

@@ -26,7 +26,7 @@ export const getUserTask = async (username) => {
   const { id: userId, group_id: groupId, role } = userData;
   console.log("userId", userId, "groupId", groupId, "role", role);
   const userTasks = await getAssignedTasks(groupId, userId, role);
-  console.log("user already assigned task", userTasks)
+  console.log("user already assigned task", userTasks);
   if (userTasks.length == 0) {
     // assign some tasks
     const assingedTasks = await assignTasks(groupId, userId, role);
@@ -73,6 +73,9 @@ export const getAssignedTasks = async (groupId, userId, role) => {
               group_id: groupId,
               state: "submitted",
               reviewer_id: userId,
+            },
+            include: {
+              transcriber: true,
             },
           });
           if (assingedTasks === null) {
@@ -138,7 +141,7 @@ export const assignTasks = async (groupId, userId, role) => {
           console.log("unassignedTasks are", unassignedTasks);
 
           if (unassignedTasks.length === 0) {
-            return assignedTasks = unassignedTasks;
+            return (assignedTasks = unassignedTasks);
           } else {
             const assignedTaskCount = await prisma.Task.updateMany({
               where: {
@@ -175,6 +178,9 @@ export const assignTasks = async (groupId, userId, role) => {
               state: "submitted",
               reviewer_id: null,
             },
+            include: {
+              transcriber: true,
+            },
             orderBy: {
               id: "asc",
             },
@@ -183,7 +189,7 @@ export const assignTasks = async (groupId, userId, role) => {
           console.log("unassignedTasks are", unassignedTasks);
 
           if (unassignedTasks.length === 0) {
-            return assignedTasks = unassignedTasks;
+            return (assignedTasks = unassignedTasks);
           } else {
             const assignedTaskCount = await prisma.Task.updateMany({
               where: {
@@ -208,7 +214,7 @@ export const assignTasks = async (groupId, userId, role) => {
           throw new Error(
             "Error while getting assigned task for REVIEWER! Please try another"
           );
-        }f
+        }
         break;
       case "FINAL_REVIEWER":
         //get first 5 of the unassigned tasks and assign some to FINAL_REVIEWER and give back to FINAL_REVIEWER
@@ -227,7 +233,7 @@ export const assignTasks = async (groupId, userId, role) => {
           console.log("unassignedTasks are", unassignedTasks);
 
           if (unassignedTasks.length === 0) {
-            return assignedTasks = unassignedTasks;
+            return (assignedTasks = unassignedTasks);
           } else {
             const assignedTaskCount = await prisma.Task.updateMany({
               where: {
@@ -265,7 +271,7 @@ export const assignTasks = async (groupId, userId, role) => {
 
 // to change the state of task based on user action (state machine)
 export const changeTaskState = (task, role, action) => {
-  console.log("changeTaskState", role, action)
+  console.log("changeTaskState", role, action);
   switch (role) {
     case "TRANSCRIBER":
       return action === "assign" || action === "save"
@@ -299,7 +305,6 @@ export const changeTaskState = (task, role, action) => {
   }
 };
 
-
 // update the files
 export const updateTask = async (action, id, transcript, task, role) => {
   console.log("update task", action, id, transcript, task, role);
@@ -324,24 +329,23 @@ export const updateTask = async (action, id, transcript, task, role) => {
       }
       break;
     case "REVIEWER":
-    try {
-      const updatedFile = await prisma.Task.update({
-        where: {
-          id,
-        },
-        data: {
-          state: changeState.state,
-          reviewed_transcript: transcript,
-          url: task.url,
-        },
-      });
-      return updatedFile;
-    } catch (error) {
-      console.log("Error updating files", error);
-    }
-    break;
+      try {
+        const updatedFile = await prisma.Task.update({
+          where: {
+            id,
+          },
+          data: {
+            state: changeState.state,
+            reviewed_transcript: transcript,
+            url: task.url,
+          },
+        });
+        return updatedFile;
+      } catch (error) {
+        console.log("Error updating files", error);
+      }
+      break;
     default:
       break;
   }
-
 };
