@@ -5,7 +5,6 @@ import React, { useState, useRef, useEffect } from "react";
 import { BsFillPlayFill, BsFillPauseFill } from "react-icons/bs";
 import { AudioPlayer } from "./AudioPlayer";
 import ActionButtons from "./ActionButtons";
-import { redirect, useRouter } from "next/navigation";
 
 const AudioTranscript = ({ tasks, userDetail }) => {
   const [index, setIndex] = useState(0);
@@ -44,23 +43,11 @@ const AudioTranscript = ({ tasks, userDetail }) => {
       setIsLoading(false);
       console.log("No task", tasks);
     }
-    // listening to keyborad events to trigger shortcuts
-    document.addEventListener("keydown", handleKeyDown);
     return () => {
-      // Clean up the event listener when the component unmounts
-      document.removeEventListener("keydown", handleKeyDown);
       isMounted = false;
     };
   }, []);
 
-  // handle shortcut key "p"
-  const handleKeyDown = (event) => {
-    console.log("Pressed key:", event.key, " code:", event.code);
-    if (event.key === "p") {
-      setIsPlaying(!isPlaying);
-      isPlaying ? audioRef.current.pause() : audioRef.current.play();
-    }
-  };
 
   const handlePlayPause = () => {
     if (isPlaying) {

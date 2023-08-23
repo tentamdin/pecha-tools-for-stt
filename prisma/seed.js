@@ -4,18 +4,18 @@ const prisma = new PrismaClient();
 
 const groups = [{ name: "a" }, { name: "b" }];
 
-const fileName = [
-  "idea.mp3",
-  "One_Einstein_Is_Worth_A_Legion_Of_P_(getmp3.pro).mp3",
-  "Its_Mind_Blowing_That_Our_Minds_Ca_(getmp3.pro).mp3",
-  "This Book Changed the Way I Think.mp3",
-  "We Can’t Prove Most Theorems with Known Physics.mp3",
-  "The Multiverse.mp3",
-  "Science_Broadens_Our_Vision_of_Real_(getmp3.pro).mp3",
-  "Science_Advances_One_Funeral_at_a_T_(getmp3.pro).mp3",
-  "We_Are_Qualitatively_Different_From_(getmp3.pro).mp3",
-  "Were_All_Equal_in_Our_Infinite_Ign_(getmp3.pro).mp3",
-  "Dont_Rely_on_Credibility_Stamps_(getmp3.pro).mp3",
+const url = [
+  "https://d38pmlk0v88drf.cloudfront.net/wav/STT_NS0007_0011_98134_to_107733.wav",
+"https://d38pmlk0v88drf.cloudfront.net/wav/STT_NS0007_0011_98134_to_107733.wav",
+"https://d38pmlk0v88drf.cloudfront.net/wav/STT_NS0007_0011_98134_to_107733.wav",
+"https://d38pmlk0v88drf.cloudfront.net/wav/STT_NS0007_0011_98134_to_107733.wav",
+"https://d38pmlk0v88drf.cloudfront.net/wav/STT_NS0007_0011_98134_to_107733.wav",
+"https://d38pmlk0v88drf.cloudfront.net/wav/STT_NS0007_0011_98134_to_107733.wav",
+"https://d38pmlk0v88drf.cloudfront.net/wav/STT_NS0007_0011_98134_to_107733.wav",
+"https://d38pmlk0v88drf.cloudfront.net/wav/STT_NS0007_0011_98134_to_107733.wav",
+"https://d38pmlk0v88drf.cloudfront.net/wav/STT_NS0007_0011_98134_to_107733.wav",
+"https://d38pmlk0v88drf.cloudfront.net/wav/STT_NS0007_0011_98134_to_107733.wav",
+"https://d38pmlk0v88drf.cloudfront.net/wav/STT_NS0007_0011_98134_to_107733.wav",
 ];
 
 async function main() {
@@ -52,7 +52,8 @@ async function main() {
           data: {
             group_id: group.id,
             inference_transcript: "dummy transcript",
-            file_name: fileName[i],
+            file_name: `file no ${i}`,
+            url: url[i]
           },
         });
         console.log("task", task);
@@ -62,6 +63,7 @@ async function main() {
     })
   );
   console.log("taskList", taskList);
+
 }
 main()
   .then(async () => {
