@@ -319,8 +319,7 @@ export const updateTask = async (action, id, transcript, task, role) => {
           },
           data: {
             state: changeState.state,
-            transcript: changeState.state === "trashed" ? null : transcript,
-            url: task.url,
+            transcript: changeState.state === "trashed" ? null : transcript
           },
         });
         return updatedFile;
@@ -336,8 +335,7 @@ export const updateTask = async (action, id, transcript, task, role) => {
           },
           data: {
             state: changeState.state,
-            reviewed_transcript: transcript,
-            url: task.url,
+            reviewed_transcript: transcript
           },
         });
         return updatedFile;
@@ -345,6 +343,22 @@ export const updateTask = async (action, id, transcript, task, role) => {
         console.log("Error updating files", error);
       }
       break;
+    case "FINAL_REVIEWER":
+        try {
+          const updatedFile = await prisma.Task.update({
+            where: {
+              id,
+            },
+            data: {
+              state: changeState.state,
+              final_transcript: transcript,
+            },
+          });
+          return updatedFile;
+        } catch (error) {
+          console.log("Error updating files", error);
+        }
+        break;
     default:
       break;
   }
