@@ -1,41 +1,50 @@
 "use client";
 
-import { updateTask } from "@/model/action";
+import { assignTasks, updateTask } from "@/model/action";
 import React, { useState, useRef, useEffect } from "react";
 import { BsFillPlayFill, BsFillPauseFill } from "react-icons/bs";
 import { AudioPlayer } from "./AudioPlayer";
 import ActionButtons from "./ActionButtons";
 
 const AudioTranscript = ({ tasks, userDetail }) => {
+  const [taskList, setTaskList] = useState(tasks);
   const [index, setIndex] = useState(0);
   const [transcript, setTranscript] = useState("");
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef(null);
   const [anyTask, setAnyTask] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  let lastTaskIndex = tasks.length != 0 ? tasks?.length - 1 : 0;
-  const { role } = userDetail;
+  let lastTaskIndex = 0;
+  const { id: userId, group_id: groupId, role } = userDetail;
 
   useEffect(() => {
     let isMounted = true;
-    console.log("user details", userDetail, "user task", tasks, lastTaskIndex);
-    if (tasks.length != 0) {
+    console.log(
+      "user details",
+      userDetail,
+      lastTaskIndex,
+      "array of task",
+      taskList
+    );
+    if (taskList?.length) {
       setAnyTask(true);
       setIsLoading(false);
+      lastTaskIndex = taskList.length - 1;
+      console.log("last index", lastTaskIndex);
       switch (role) {
         case "TRANSCRIBER":
-          console.log("inside switch 1", tasks[index].transcript === null);
-          tasks[index].transcript != null
-            ? setTranscript(tasks[index].transcript)
-            : setTranscript(tasks[index].inference_transcript);
+          console.log("inside switch 1", taskList[index]?.transcript === null);
+          taskList[index]?.transcript != null
+            ? setTranscript(taskList[index]?.transcript)
+            : setTranscript(taskList[index]?.inference_transcript);
           break;
         case "REVIEWER":
-          tasks[index].reviewed_transcript != null
-            ? setTranscript(tasks[index].reviewed_transcript)
-            : setTranscript(tasks[index].transcript);
+          taskList[index].reviewed_transcript != null
+            ? setTranscript(taskList[index]?.reviewed_transcript)
+            : setTranscript(taskList[index]?.transcript);
           break;
         case "FINAL_REVIEWER":
-          setTranscript(tasks[index].reviewed_transcript);
+          setTranscript(taskList[index]?.reviewed_transcript);
           break;
         default:
           break;
@@ -43,12 +52,12 @@ const AudioTranscript = ({ tasks, userDetail }) => {
     } else {
       setAnyTask(false);
       setIsLoading(false);
-      console.log("No task", tasks);
+      console.log("No task", taskList);
     }
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [taskList]);
 
   const handlePlayPause = () => {
     if (isPlaying) {
@@ -72,17 +81,21 @@ const AudioTranscript = ({ tasks, userDetail }) => {
     console.log("task id", id, "role", role);
     try {
       const response = await updateTask(action, id, transcript, task, role);
+      console.log("response", response);
       if (lastTaskIndex != index) {
         role === "TRANSCRIBER"
-          ? setTranscript(tasks[index + 1].inference_transcript)
+          ? setTranscript(taskList[index + 1].inference_transcript)
           : role === "REVIEWER"
-          ? setTranscript(tasks[index + 1].transcript)
-          : setTranscript(tasks[index + 1].reviewed_transcript);
+          ? setTranscript(taskList[index + 1].transcript)
+          : setTranscript(taskList[index + 1].reviewed_transcript);
         setIndex(index + 1);
       } else {
-        setAnyTask(false);
+        const moreTask = await assignTasks(groupId, userId, role);
+        console.log("more tasks", moreTask);
+        setIsLoading(true);
+        setIndex(0);
+        setTaskList(moreTask);
       }
-      console.log("response", response);
     } catch (error) {
       throw new Error(error);
     }
@@ -100,12 +113,12 @@ const AudioTranscript = ({ tasks, userDetail }) => {
             <div>
               <p className="mt-5">
                 <strong>Transcriber : </strong>
-                <span>{tasks[index].transcriber?.name}</span>
+                <span>{taskList[index].transcriber?.name}</span>
               </p>
               {role === "FINAL_REVIEWER" && (
                 <p className="mt-2">
                   <strong>Reviewer : </strong>
-                  <span>{tasks[index].reviewer?.name}</span>
+                  <span>{taskList[index].reviewer?.name}</span>
                 </p>
               )}
             </div>
@@ -113,7 +126,7 @@ const AudioTranscript = ({ tasks, userDetail }) => {
 
           <div className="border rounded-md shadow-sm shadow-gray-400 w-4/5 p-5 mt-10">
             <div className="flex flex-col gap-5 items-center">
-              <AudioPlayer tasks={tasks} index={index} audioRef={audioRef} />
+              <AudioPlayer tasks={taskList} index={index} audioRef={audioRef} />
               <textarea
                 value={transcript || ""}
                 onChange={(e) => setTranscript(e.target.value)}
@@ -144,7 +157,7 @@ const AudioTranscript = ({ tasks, userDetail }) => {
           </div>
           <ActionButtons
             updateTaskAndIndex={updateTaskAndIndex}
-            tasks={tasks}
+            tasks={taskList}
             index={index}
             transcript={transcript}
             role={role}
