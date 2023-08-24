@@ -96,12 +96,21 @@ const AudioTranscript = ({ tasks, userDetail }) => {
         </div>
       ) : anyTask ? (
         <>
-          {role === "REVIEWER" && (
-            <p className="mt-10">
-              <strong>Transcribed By : </strong>
-              {tasks[index].transcriber?.name}
-            </p>
+          {(role === "REVIEWER" || role === "FINAL_REVIEWER") && (
+            <div>
+              <p className="mt-5">
+                <strong>Transcriber : </strong>
+                <span>{tasks[index].transcriber?.name}</span>
+              </p>
+              {role === "FINAL_REVIEWER" && (
+                <p className="mt-2">
+                  <strong>Reviewer : </strong>
+                  <span>{tasks[index].reviewer?.name}</span>
+                </p>
+              )}
+            </div>
           )}
+
           <div className="border rounded-md shadow-sm shadow-gray-400 w-4/5 p-5 mt-10">
             <div className="flex flex-col gap-5 items-center">
               <AudioPlayer tasks={tasks} index={index} audioRef={audioRef} />

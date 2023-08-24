@@ -99,6 +99,10 @@ export const getAssignedTasks = async (groupId, userId, role) => {
               state: "accepted",
               final_reviewer_id: userId,
             },
+            include: {
+              transcriber: true,
+              reviewer: true,
+            },
           });
           if (assingedTasks === null) {
             throw new Error("No task found for FINAL_REVIEWER!.");
@@ -225,6 +229,10 @@ export const assignTasks = async (groupId, userId, role) => {
               group_id: groupId,
               state: "accepted",
               final_reviewer_id: null,
+            },
+            include: {
+              transcriber: true,
+              reviewer: true,
             },
             orderBy: {
               id: "asc",
