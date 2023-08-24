@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
 const groups = [{ name: "a" }, { name: "b" }];
 
 const url = [
-  "https://d38pmlk0v88drf.cloudfront.net/wav/STT_NS0007_0011_98134_to_107733.wav",
+"https://d38pmlk0v88drf.cloudfront.net/wav/STT_NS0007_0011_98134_to_107733.wav",
 "https://d38pmlk0v88drf.cloudfront.net/wav/STT_NS0007_0011_98134_to_107733.wav",
 "https://d38pmlk0v88drf.cloudfront.net/wav/STT_NS0007_0011_98134_to_107733.wav",
 "https://d38pmlk0v88drf.cloudfront.net/wav/STT_NS0007_0011_98134_to_107733.wav",
@@ -52,7 +52,7 @@ async function main() {
           data: {
             group_id: group.id,
             inference_transcript: "dummy transcript",
-            file_name: `file no ${i}`,
+            file_name: url[i].split('/').pop(),
             url: url[i]
           },
         });
