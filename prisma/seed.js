@@ -5,21 +5,20 @@ const prisma = new PrismaClient();
 const groups = [{ name: "a" }, { name: "b" }];
 
 const url = [
-"https://d38pmlk0v88drf.cloudfront.net/wav/STT_NS0007_0011_98134_to_107733.wav",
-"https://d38pmlk0v88drf.cloudfront.net/wav/STT_NS0007_0011_98134_to_107733.wav",
-"https://d38pmlk0v88drf.cloudfront.net/wav/STT_NS0007_0011_98134_to_107733.wav",
-"https://d38pmlk0v88drf.cloudfront.net/wav/STT_NS0007_0011_98134_to_107733.wav",
-"https://d38pmlk0v88drf.cloudfront.net/wav/STT_NS0007_0011_98134_to_107733.wav",
-"https://d38pmlk0v88drf.cloudfront.net/wav/STT_NS0007_0011_98134_to_107733.wav",
-"https://d38pmlk0v88drf.cloudfront.net/wav/STT_NS0007_0011_98134_to_107733.wav",
-"https://d38pmlk0v88drf.cloudfront.net/wav/STT_NS0007_0011_98134_to_107733.wav",
-"https://d38pmlk0v88drf.cloudfront.net/wav/STT_NS0007_0011_98134_to_107733.wav",
-"https://d38pmlk0v88drf.cloudfront.net/wav/STT_NS0007_0011_98134_to_107733.wav",
-"https://d38pmlk0v88drf.cloudfront.net/wav/STT_NS0007_0011_98134_to_107733.wav",
+  "https://d38pmlk0v88drf.cloudfront.net/wav/STT_NS0007_0011_98134_to_107733.wav",
+  "https://d38pmlk0v88drf.cloudfront.net/wav/STT_NS0007_0012_107733_to_117333.wav",
+  "https://d38pmlk0v88drf.cloudfront.net/wav/STT_NS0007_0013_117333_to_126932.wav",
+  "https://d38pmlk0v88drf.cloudfront.net/wav/STT_NS0007_0021_196095_to_205807.wav",
+  "https://d38pmlk0v88drf.cloudfront.net/wav/STT_NS0007_0022_205807_to_215519.wav",
+  "https://d38pmlk0v88drf.cloudfront.net/wav/STT_NS0007_0023_217257_to_225262.wav",
+  "https://d38pmlk0v88drf.cloudfront.net/wav/STT_NS0007_0024_225262_to_233268.wav",
+  "https://d38pmlk0v88drf.cloudfront.net/wav/STT_NS0007_0025_233268_to_241273.wav",
+  "https://d38pmlk0v88drf.cloudfront.net/wav/STT_NS0007_0014_126932_to_136532.wav",
+  "https://d38pmlk0v88drf.cloudfront.net/wav/STT_NS0007_0015_136532_to_146131.wav",
+  "https://d38pmlk0v88drf.cloudfront.net/wav/STT_NS0007_0026_241273_to_249279.wav",
 ];
 
 async function main() {
-
   // create  group
   const numGroup = await prisma.group.createMany({
     data: groups,
@@ -52,8 +51,8 @@ async function main() {
           data: {
             group_id: group.id,
             inference_transcript: "dummy transcript",
-            file_name: url[i].split('/').pop(),
-            url: url[i]
+            file_name: url[i].split("/").pop(),
+            url: url[i],
           },
         });
         console.log("task", task);
@@ -63,7 +62,6 @@ async function main() {
     })
   );
   console.log("taskList", taskList);
-
 }
 main()
   .then(async () => {
