@@ -73,7 +73,11 @@ const AudioTranscript = ({ tasks, userDetail }) => {
     try {
       const response = await updateTask(action, id, transcript, task, role);
       if (lastTaskIndex != index) {
-        setTranscript(tasks[index + 1].inference_transcript);
+        role === "TRANSCRIBER"
+          ? setTranscript(tasks[index + 1].inference_transcript)
+          : role === "REVIEWER"
+          ? setTranscript(tasks[index + 1].transcript)
+          : setTranscript(tasks[index + 1].reviewed_transcript);
         setIndex(index + 1);
       } else {
         setAnyTask(false);
