@@ -2,6 +2,7 @@
 
 import prisma from "@/lib/db";
 
+const  ASSIGN_TASKS = 5;
 //get user detail if exist
 export const getUserDetails = async (username) => {
   try {
@@ -125,7 +126,7 @@ export const assignTasks = async (groupId, userId, role) => {
   try {
     switch (role) {
       case "TRANSCRIBER":
-        //get first 5 of the unassigned tasks and assign some to TRANSCRIBER and give back to TRANSCRIBER
+        //get first ASSIGN_TASKS of the unassigned tasks and assign some to TRANSCRIBER and give back to TRANSCRIBER
         try {
           const unassignedTasks = await prisma.Task.findMany({
             where: {
@@ -136,7 +137,7 @@ export const assignTasks = async (groupId, userId, role) => {
             orderBy: {
               id: "asc",
             },
-            take: 5,
+            take: ASSIGN_TASKS,
           });
           console.log("unassignedTasks are", unassignedTasks);
 
@@ -170,7 +171,7 @@ export const assignTasks = async (groupId, userId, role) => {
         }
         break;
       case "REVIEWER":
-        //get first 5 of the unassigned tasks and assign some to REVIEWER and give back to REVIEWER
+        //get first ASSIGN_TASKS of the unassigned tasks and assign some to REVIEWER and give back to REVIEWER
         try {
           const unassignedTasks = await prisma.Task.findMany({
             where: {
@@ -184,7 +185,7 @@ export const assignTasks = async (groupId, userId, role) => {
             orderBy: {
               id: "asc",
             },
-            take: 5,
+            take: ASSIGN_TASKS,
           });
           console.log("unassignedTasks are", unassignedTasks);
 
@@ -217,7 +218,7 @@ export const assignTasks = async (groupId, userId, role) => {
         }
         break;
       case "FINAL_REVIEWER":
-        //get first 5 of the unassigned tasks and assign some to FINAL_REVIEWER and give back to FINAL_REVIEWER
+        //get first ASSIGN_TASKS of the unassigned tasks and assign some to FINAL_REVIEWER and give back to FINAL_REVIEWER
         try {
           const unassignedTasks = await prisma.Task.findMany({
             where: {
@@ -228,7 +229,7 @@ export const assignTasks = async (groupId, userId, role) => {
             orderBy: {
               id: "asc",
             },
-            take: 5,
+            take: ASSIGN_TASKS,
           });
           console.log("unassignedTasks are", unassignedTasks);
 
