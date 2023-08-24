@@ -3,7 +3,6 @@ import React from "react";
 import {
   BsCheckLg,
   BsXLg,
-  BsSlashCircle,
   BsArrowReturnLeft,
   BsTrash,
 } from "react-icons/bs";
@@ -23,28 +22,34 @@ const ActionButtons = ({ updateTaskAndIndex, index, tasks, transcript, role }) =
             )
           }
         >
-          <BsCheckLg width="5rem" />
-          <p>Submit</p>
+          <div className="flex flex-col items-center">
+
+            <BsCheckLg width="5rem" />
+            <p>Submit</p>
+          </div>
         </button>
         {role !== "TRANSCRIBER" && (
+          <button
+            type="button"
+            className="focus:outline-none text-white bg-red-700 hover:bg-red-800 font-medium text-sm p-9"
+            onClick={() =>
+              updateTaskAndIndex(
+                "reject",
+                transcript,
+                tasks[index]
+              )
+            }
+          >
+            <div className="flex flex-col items-center">
+
+              <BsXLg />
+              <p>Reject</p>
+            </div>
+          </button>
+        )}
         <button
           type="button"
-          className="focus:outline-none text-white bg-red-700 hover:bg-red-800 font-medium text-sm p-9"
-          onClick={() =>
-            updateTaskAndIndex(
-              "reject",
-              transcript,
-              tasks[index]
-            )
-          }
-        >
-          <BsXLg />
-          <p>Reject</p>
-        </button>
-        ) } 
-        <button
-          type="button"
-          className="focus:outline-none text-white bg-gray-400 hover:bg-gray-500 font-medium text-sm p-9"
+          className="focus:outline-none text-white bg-gray-700 hover:bg-gray-800 font-medium text-sm p-9"
           onClick={() =>
             updateTaskAndIndex(
               "trash",
@@ -53,8 +58,11 @@ const ActionButtons = ({ updateTaskAndIndex, index, tasks, transcript, role }) =
             )
           }
         >
-          <BsTrash />
-          <p>Trash</p>
+          <div className="flex flex-col items-center">
+
+            <BsTrash />
+            <p>Trash</p>
+          </div>
         </button>
         <button
           type="button"
@@ -67,8 +75,10 @@ const ActionButtons = ({ updateTaskAndIndex, index, tasks, transcript, role }) =
             )
           }
         >
-          <BsArrowReturnLeft />
-          <p>Save</p>
+          <div className="flex flex-col items-center">
+            <BsArrowReturnLeft />
+            <p>Save</p>
+          </div>
         </button>
       </div>
     </>
