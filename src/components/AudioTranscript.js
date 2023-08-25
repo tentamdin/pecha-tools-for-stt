@@ -17,6 +17,9 @@ const AudioTranscript = ({ tasks, userDetail }) => {
   let lastTaskIndex = 0;
   const { id: userId, group_id: groupId, role } = userDetail;
 
+  function getLastTaskIndex() {
+    return taskList.length != 0 ? taskList?.length - 1 : 0;
+  }
   useEffect(() => {
     let isMounted = true;
     console.log(
@@ -82,7 +85,8 @@ const AudioTranscript = ({ tasks, userDetail }) => {
     try {
       const response = await updateTask(action, id, transcript, task, role);
       console.log("response", response);
-      if (lastTaskIndex != index) {
+      if (getLastTaskIndex() != index) {
+        console.log(" this is not  last task in task list ", index);
         role === "TRANSCRIBER"
           ? setTranscript(taskList[index + 1].inference_transcript)
           : role === "REVIEWER"
@@ -90,6 +94,7 @@ const AudioTranscript = ({ tasks, userDetail }) => {
           : setTranscript(taskList[index + 1].reviewed_transcript);
         setIndex(index + 1);
       } else {
+        console.log(" this is the last task in task list, assigning more task ", index);
         const moreTask = await assignTasks(groupId, userId, role);
         console.log("more tasks", moreTask);
         setIsLoading(true);
