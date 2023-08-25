@@ -180,6 +180,7 @@ export const assignTasks = async (groupId, userId, role) => {
             where: {
               group_id: groupId,
               state: "submitted",
+              reviewer_id: null,
             },
             include: {
               transcriber: true,
@@ -226,6 +227,7 @@ export const assignTasks = async (groupId, userId, role) => {
             where: {
               group_id: groupId,
               state: "accepted",
+              final_reviewer_id: null,
             },
             include: {
               transcriber: true,
