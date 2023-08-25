@@ -14,7 +14,6 @@ const AudioTranscript = ({ tasks, userDetail }) => {
   const audioRef = useRef(null);
   const [anyTask, setAnyTask] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  let lastTaskIndex = 0;
   const { id: userId, group_id: groupId, role } = userDetail;
 
   function getLastTaskIndex() {
@@ -25,15 +24,13 @@ const AudioTranscript = ({ tasks, userDetail }) => {
     console.log(
       "user details",
       userDetail,
-      lastTaskIndex,
       "array of task",
       taskList
     );
     if (taskList?.length) {
       setAnyTask(true);
       setIsLoading(false);
-      lastTaskIndex = taskList.length - 1;
-      console.log("last index", lastTaskIndex);
+      console.log("last index", getLastTaskIndex());
       switch (role) {
         case "TRANSCRIBER":
           console.log("inside switch 1", taskList[index]?.transcript === null);
