@@ -1,14 +1,15 @@
 "use server";
 
 import prisma from "@/lib/db";
+import { revalidatePath } from "next/cache";
 
 export const getAllGroup = async () => {
   try {
     const allGroup = await prisma.group.findMany({
       include: {
         users: true,
-        tasks: true
-      }
+        tasks: true,
+      },
     });
     return allGroup;
   } catch (error) {
@@ -16,13 +17,16 @@ export const getAllGroup = async () => {
   }
 };
 
-export const createGroup = async (name) => {
+export const createGroup = async (formData) => {
+  console.log("creategroup called", formData);
+  const groupName = formData.get("name");
   try {
     const newGroup = await prisma.group.create({
       data: {
-        name,
+        name: groupName,
       },
     });
+    revalidatePath("/dashboard/group");
     return newGroup;
   } catch (error) {
     console.log("Error creating a group", error);
@@ -37,6 +41,7 @@ export const deleteGroup = async (id) => {
         id,
       },
     });
+    revalidatePath("/dashboard/group");
     return group;
   } catch (error) {
     console.log("Error deleting a group", error);
@@ -44,16 +49,19 @@ export const deleteGroup = async (id) => {
   }
 };
 
-export const editGroup = async (id, name) => {
+export const editGroup = async (id, formData) => {
+  console.log("editGroup called");
+  const groupName = formData.get("name");
   try {
     const group = await prisma.group.update({
       where: {
         id,
       },
       data: {
-        name,
+        name: groupName,
       },
     });
+    revalidatePath("/dashboard/group");
     return group;
   } catch (error) {
     console.log("Error updating a group", error);
