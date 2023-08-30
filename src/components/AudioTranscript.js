@@ -21,12 +21,7 @@ const AudioTranscript = ({ tasks, userDetail }) => {
   }
   useEffect(() => {
     let isMounted = true;
-    console.log(
-      "user details",
-      userDetail,
-      "array of task",
-      taskList
-    );
+    console.log("user details", userDetail, "array of task", taskList);
     if (taskList?.length) {
       setAnyTask(true);
       setIsLoading(false);
@@ -91,7 +86,10 @@ const AudioTranscript = ({ tasks, userDetail }) => {
           : setTranscript(taskList[index + 1].reviewed_transcript);
         setIndex(index + 1);
       } else {
-        console.log(" this is the last task in task list, assigning more task ", index);
+        console.log(
+          " this is the last task in task list, assigning more task ",
+          index
+        );
         const moreTask = await assignTasks(groupId, userId, role);
         console.log("more tasks", moreTask);
         setIsLoading(true);
@@ -126,14 +124,15 @@ const AudioTranscript = ({ tasks, userDetail }) => {
             </div>
           )}
 
-          <div className="border rounded-md shadow-sm shadow-gray-400 w-4/5 p-5 mt-10">
-            <div className="flex flex-col gap-5 items-center">
+          <div className="border rounded-md shadow-sm shadow-gray-400 w-11/12 md:w-3/4 p-5 mt-20 mb-40">
+            <div className="flex flex-col gap-5 justify-center items-center">
               <AudioPlayer tasks={taskList} index={index} audioRef={audioRef} />
               <textarea
                 value={transcript || ""}
                 onChange={(e) => setTranscript(e.target.value)}
-                className="rounded-md p-4 h-96 border border-slate-400 w-11/12"
+                className="rounded-md p-4 border border-slate-400 w-11/12"
                 placeholder="Type here..."
+                rows={7}
                 id="transcript"
               ></textarea>
               <div className="flex flex-wrap gap-6 justify-center">
