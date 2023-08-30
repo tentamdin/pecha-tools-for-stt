@@ -7,7 +7,7 @@ const DashboardBtn = ({ label, icon, onClick }) => {
   return (
     <button
       type="button"
-      className=" text-white bg-green-600 hover:bg-green-700 w-1/2 sm:w-1/5 text-base sm:text-lg py-2 px-40 sm:py-4 sm:px-32  rounded-md"
+      className="btn btn-wide text-white bg-green-600 hover:bg-green-700 text-base sm:text-lg  rounded-md"
       onClick={onClick}
     >
       <div className="flex whitespace-nowrap justify-center items-center space-x-2">

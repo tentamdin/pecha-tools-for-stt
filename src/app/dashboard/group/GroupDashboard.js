@@ -3,13 +3,14 @@
 import DashboardBtn from "@/components/DashboardBtn";
 import React, { useState } from "react";
 import { AiOutlinePlus } from "react-icons/ai";
-import AddTaskModal from "./AddTaskModal";
-import EditTaskModal from "./EditTaskModal";
+import AddGroupModal from "./AddGroupModal";
+import EditGroupModal from "./EditGroupModal";
 import { deleteGroup } from "@/model/group";
-const GroupTable = ({ groupList }) => {
+
+const GroupDashboard = ({ groupList }) => {
   const [selectedRow, setSelectedRow] = useState(null);
 
-  const removeGroup = async (row) => {
+  const handleRemoveGroup = async (row) => {
     const noUser = row.users?.length;
     const noTask = row.tasks?.length;
     if (noUser !== 0 || noTask !== 0) {
@@ -22,7 +23,7 @@ const GroupTable = ({ groupList }) => {
     }
   };
 
-  const editGroup = async (row) => {
+  const handleEditGroup = async (row) => {
     const oneGroup = await groupList.find((group) => group.id === row.id);
     setSelectedRow(oneGroup);
     window.edit_modal.showModal();
@@ -75,14 +76,14 @@ const GroupTable = ({ groupList }) => {
                     <a
                       href="#"
                       className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-                      onClick={() => editGroup(row)}
+                      onClick={() => handleEditGroup(row)}
                     >
                       Edit
                     </a>
                     <a
                       href="#"
                       className="font-medium text-red-600 dark:text-red-500 hover:underline"
-                      onClick={() => removeGroup(row)}
+                      onClick={() => handleRemoveGroup(row)}
                     >
                       Remove
                     </a>
@@ -93,10 +94,10 @@ const GroupTable = ({ groupList }) => {
           </table>
         </div>
       </div>
-      <AddTaskModal />
-      <EditTaskModal selectedRow={selectedRow} />
+      <AddGroupModal />
+      <EditGroupModal selectedRow={selectedRow} />
     </div>
   );
 };
 
-export default GroupTable;
+export default GroupDashboard;

@@ -1,8 +1,8 @@
 "use client";
-import React, {  useRef } from "react";
+import React, { useRef } from "react";
 import { editGroup } from "@/model/group";
 
-const EditTaskModal = ({ selectedRow }) => {
+const EditGroupModal = ({ selectedRow }) => {
   const ref = useRef(null);
 
   console.log("one group", selectedRow);
@@ -15,7 +15,10 @@ const EditTaskModal = ({ selectedRow }) => {
             <h3 className="font-bold text-lg">Edit Group</h3>
             <button
               className="btn btn-sm btn-circle btn-ghost"
-              onClick={() => window.edit_modal.close()}
+              onClick={() => {
+                ref.current?.reset();
+                window.edit_modal.close();
+              }}
             >
               ✕
             </button>
@@ -89,7 +92,7 @@ const EditTaskModal = ({ selectedRow }) => {
             formAction={async (formData) => {
               ref.current?.reset();
               console.log("formData", selectedRow?.id, formData.get("name"));
-              const edited_Group = await  editGroup( selectedRow?.id, formData);
+              const edited_Group = await editGroup(selectedRow?.id, formData);
               window.edit_modal.close();
             }}
             className="btn my-4 py-1 px-6 normal-case bg-green-500 hover:bg-green-600 text-white"
@@ -102,4 +105,4 @@ const EditTaskModal = ({ selectedRow }) => {
   );
 };
 
-export default EditTaskModal;
+export default EditGroupModal;

@@ -1,14 +1,16 @@
 "use client";
 
-import React from "react";
-import { AiOutlinePlus, AiOutlineMinus, AiOutlineEdit } from "react-icons/ai";
+import React, { useState } from "react";
+import { AiOutlinePlus } from "react-icons/ai";
 import DashboardBtn from "@/components/DashboardBtn";
 import AddUserModal from "./AddUserModal";
 import { deleteUser } from "@/model/user";
+import EditUserModal from "./EditUserModal";
 
 const UserDashboard = ({ users, groups }) => {
-  
-  const removeGroup = async (user) => {
+  const [selectedRow, setSelectedRow] = useState(null);
+
+  const handleRemoveUser = async (user) => {
     const noTranscriberTask = user.transcriber_task?.length;
     const noReviewerTask = user.reviewer_task?.length;
     const noFinalReviewerTask = user.final_reviewer_task?.length;
@@ -22,6 +24,12 @@ const UserDashboard = ({ users, groups }) => {
       const deletedUser = await deleteUser(user.id);
       console.log("deletedUser", deletedUser);
     }
+  };
+
+  const handleEditUser = async (userRow) => {
+    const oneUser = await users.find((user) => user.id === userRow.id);
+    setSelectedRow(oneUser);
+    window.edit_modal.showModal();
   };
 
   return (
@@ -75,14 +83,14 @@ const UserDashboard = ({ users, groups }) => {
                     <a
                       href="#"
                       className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-                      onClick={() => editGroup(user)}
+                      onClick={() => handleEditUser(user)}
                     >
                       Edit
                     </a>
                     <a
                       href="#"
                       className="font-medium text-red-600 dark:text-red-500 hover:underline"
-                      onClick={() => removeGroup(user)}
+                      onClick={() => handleRemoveUser(user)}
                     >
                       Remove
                     </a>
@@ -93,6 +101,7 @@ const UserDashboard = ({ users, groups }) => {
           </table>
         </div>
         <AddUserModal groups={groups} />
+        <EditUserModal groups={groups} selectedRow={selectedRow} />
       </div>
     </>
   );

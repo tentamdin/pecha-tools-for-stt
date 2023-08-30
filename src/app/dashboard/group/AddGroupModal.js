@@ -3,7 +3,7 @@
 import React, { useRef } from "react";
 import { createGroup } from "@/model/group";
 
-const AddTaskModal = () => {
+const AddGroupModal = () => {
   const ref = useRef(null);
   return (
     <>
@@ -54,4 +54,4 @@ const AddTaskModal = () => {
   );
 };
 
-export default AddTaskModal;
+export default AddGroupModal;

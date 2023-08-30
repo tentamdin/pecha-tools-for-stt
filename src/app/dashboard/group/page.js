@@ -1,6 +1,6 @@
 import { getAllGroup } from "@/model/group";
 import React from "react";
-import GroupTable from "./GroupTable";
+import GroupDashboard from "./GroupDashboard";
 
 const Group = async () => {
   const groupList = await getAllGroup();
@@ -8,7 +8,7 @@ const Group = async () => {
   return (
     <>
       <div className="h-screen mt-20">
-        <GroupTable groupList={groupList} />
+        <GroupDashboard groupList={groupList} />
       </div>
     </>
   );
