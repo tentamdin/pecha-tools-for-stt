@@ -9,7 +9,7 @@ export default async function Home({ searchParams }) {
   const userDetail = await getUserDetails(session);
 
   return (
-    <div className="flex flex-col justify-center items-center">
+    <div className="flex flex-col justify-center items-center overflow-y-auto">
       <AudioTranscript tasks={userTasks} userDetail={userDetail} />
     </div>
   );
