@@ -10,10 +10,13 @@ const AddTaskModal = () => {
       <dialog id="add_modal" className="modal">
         <form ref={ref} method="dialog" className="modal-box">
           <div className="flex justify-between items-center">
-            <h3 className="font-bold text-lg">Add Group</h3>
+            <h3 className="font-bold text-lg">Create Group</h3>
             <button
               className="btn btn-sm btn-circle btn-ghost"
-              onClick={() => window.add_modal.close()}
+              onClick={() => {
+                ref.current?.reset();
+                window.add_modal.close();
+              }}
             >
               ✕
             </button>
