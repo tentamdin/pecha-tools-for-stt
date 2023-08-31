@@ -56,7 +56,12 @@ export const deleteUser = async (id) => {
   }
 };
 
-export const editUser = async (id, name, groupId, role) => {
+export const editUser = async (id, formData) => {
+  console.log("createuser called", formData);
+  const name = formData.get("name");
+  const email = formData.get("email");
+  const groupId = formData.get("group_id");
+  const role = formData.get("role");
   try {
     const group = await prisma.user.update({
       where: {
@@ -64,10 +69,12 @@ export const editUser = async (id, name, groupId, role) => {
       },
       data: {
         name,
-        group_id: groupId,
+        email,
+        group_id: parseInt(groupId),
         role,
       },
     });
+    revalidatePath("/dashboard/user");
     return group;
   } catch (error) {
     console.log("Error updating a user details", error);
