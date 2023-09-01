@@ -1,10 +1,19 @@
 "use server";
 
-const { PrismaClient } = require("@prisma/client");
+import prisma from "@/lib/db";
+import { revalidatePath } from "next/cache";
+
 const fs = require("fs");
 const csvParser = require("csv-parser");
 
-const prisma = new PrismaClient();
+export const getAllTask = async () => {
+  try {
+    const tasks = await prisma.task.findMany({});
+    return tasks;
+  } catch (error) {
+    console.error("Error getting all the tasks:", error);
+  }
+};
 
 export async function createTasksFromCSV(fileData, formData) {
   const groupId = formData.get("group_id");
@@ -30,6 +39,7 @@ export async function createTasksFromCSV(fileData, formData) {
       return task;
     })
   );
+  revalidatePath("/dashboard/task");
   console.log("Tasks created successfully", tasksCreated);
 }
 

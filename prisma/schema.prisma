@@ -47,9 +47,9 @@ model Task {
   final_reviewer_id     Int?
   final_reviewer        User?     @relation("FinalReviewerTasks", fields: [final_reviewer_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "task_final_reviewer_id_foreign")
   created_at            DateTime? @default(now())
-  submitted_on          DateTime? @updatedAt()
-  reviewed_on           DateTime? @updatedAt()
-  finalised_reviewed_on DateTime? @updatedAt()
+  submitted_at          DateTime?
+  reviewed_at           DateTime?
+  finalised_reviewed_at DateTime?
 
   @@index([final_reviewer_id], map: "task_final_reviewer_id_foreign")
   @@index([group_id], map: "task_group_id_foreign")

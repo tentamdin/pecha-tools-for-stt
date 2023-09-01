@@ -34,7 +34,7 @@ const UserDashboard = ({ users, groups }) => {
 
   return (
     <>
-      <div className="flex flex-col sm:flex-row justify-center items-center mt-10 space-y-5 space-x-0 sm:space-y-0 sm:space-x-10">
+      <div className="flex flex-col sm:flex-row justify-center items-center space-y-5 space-x-0 sm:space-y-0 sm:space-x-10">
         <DashboardBtn
           label="Create"
           icon={<AiOutlinePlus />}
@@ -42,7 +42,7 @@ const UserDashboard = ({ users, groups }) => {
         />
       </div>
       <div className="flex justify-center items-center my-10">
-        <div className="relative overflow-x-auto shadow-md sm:rounded-lg w-4/5">
+        <div className="relative overflow-x-auto shadow-md sm:rounded-lg w-11/12 md:w-4/5 max-h-[80vh]">
           <table className="w-full text-sm text-left text-gray-500">
             <thead className="text-xs text-gray-700 uppercase bg-gray-50">
               <tr>
@@ -67,7 +67,7 @@ const UserDashboard = ({ users, groups }) => {
               </tr>
             </thead>
             <tbody>
-              {users.map((user) => (
+              {users?.map((user) => (
                 <tr key={user.id} className="bg-white border-b">
                   <th
                     scope="row"

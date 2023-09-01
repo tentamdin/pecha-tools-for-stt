@@ -7,8 +7,6 @@ const TaskForm = ({ groups }) => {
   const ref = useRef(null);
   const [selectedFile, setSelectedFile] = useState([]);
 
-  console.log("selectedFile", selectedFile);
-
   const handleFileChange = (event) => {
     console.log(event.target.files[0]);
     //  Passing file data (event.target.files[0]) to parse using Papa.parse
@@ -26,7 +24,7 @@ const TaskForm = ({ groups }) => {
     <>
       <form
         ref={ref}
-        className="flex flex-col sm:flex-row justify-center items-center sm:items-end mt-10 space-y-5 space-x-0 sm:space-y-0 sm:space-x-10"
+        className="flex flex-col md:flex-row justify-center items-center md:items-end space-y-5 space-x-0 md:space-y-0 md:space-x-10"
       >
         <div className="form-control">
           <label className="label" htmlFor="group_id">
