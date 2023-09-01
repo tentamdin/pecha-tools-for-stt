@@ -67,7 +67,7 @@ const UserDashboard = ({ users, groups }) => {
               </tr>
             </thead>
             <tbody>
-              {users.map((user) => (
+              {users?.map((user) => (
                 <tr key={user.id} className="bg-white border-b">
                   <th
                     scope="row"

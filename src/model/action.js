@@ -328,6 +328,7 @@ export const updateTask = async (action, id, transcript, task, role) => {
           data: {
             state: changeState.state,
             transcript: changeState.state === "trashed" ? null : transcript,
+            submitted_at: new Date().toISOString(),
           },
         });
         return updatedFile;
@@ -348,6 +349,7 @@ export const updateTask = async (action, id, transcript, task, role) => {
               changeState.state === "transcribing"
                 ? null
                 : transcript,
+            reviewed_at: new Date().toISOString(),
           },
         });
         return updatedFile;
@@ -368,6 +370,7 @@ export const updateTask = async (action, id, transcript, task, role) => {
               changeState.state === "submitted"
                 ? null
                 : transcript,
+            finalised_reviewed_at: new Date().toISOString(),
           },
         });
         return updatedFile;

@@ -61,7 +61,7 @@ const GroupDashboard = ({ groupList }) => {
               </tr>
             </thead>
             <tbody>
-              {groupList.map((row) => (
+              {groupList?.map((row) => (
                 <tr className="bg-white border-b" key={row.id}>
                   <th
                     scope="row"

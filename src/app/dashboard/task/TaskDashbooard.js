@@ -31,7 +31,7 @@ const TaskDashbooard = ({ tasks, groups }) => {
               </tr>
             </thead>
             <tbody className="">
-              {tasks.map((task) => (
+              {tasks?.map((task) => (
                 <tr className="bg-white border-b">
                   <th
                     scope="row"
@@ -43,10 +43,10 @@ const TaskDashbooard = ({ tasks, groups }) => {
                   <td className="px-6 py-4">{task.state}</td>
                   <td className="px-4 py-4">{task.inference_transcript}</td>
                   <td className="px-6 py-4 truncate">
-                    {task.file_name.slice(0, 15) + "..."}
+                    {task?.file_name?.slice(0, 15) + "..."}
                   </td>
                   <td className="px-6 py-4 truncate">
-                    {task.url.slice(0, 15) + "..."}
+                    {task?.url?.slice(0, 15) + "..."}
                   </td>
                 </tr>
               ))}
