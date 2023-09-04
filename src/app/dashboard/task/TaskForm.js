@@ -2,6 +2,7 @@
 import { createTasksFromCSV } from "@/model/task";
 import React, { useState, useRef } from "react";
 import Papa from "papaparse";
+import Select from "@/components/Select";
 
 const TaskForm = ({ groups }) => {
   const ref = useRef(null);
@@ -26,24 +27,7 @@ const TaskForm = ({ groups }) => {
         ref={ref}
         className="flex flex-col md:flex-row justify-center items-center md:items-end space-y-5 space-x-0 md:space-y-0 md:space-x-10"
       >
-        <div className="form-control">
-          <label className="label" htmlFor="group_id">
-            <span className="label-text text-base font-semibold">Group</span>
-          </label>
-          <select
-            id="group_id"
-            name="group_id"
-            className="select select-bordered overflow-y-scroll w-80"
-            required
-          >
-            <option value="">Select group</option>
-            {groups.map((group) => (
-              <option key={group.id} value={group.id}>
-                {group.name}
-              </option>
-            ))}
-          </select>
-        </div>
+        <Select title="group_id" label="Groups" options={groups} />
         <div className="form-control w-full max-w-xs">
           <label className="label" htmlFor="file_name">
             <span className="label-text text-base font-semibold">

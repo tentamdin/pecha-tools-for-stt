@@ -111,7 +111,7 @@ const EditUserModal = ({ groups, selectedRow }) => {
               <div className="form-control w-full">
                 <label className="label" htmlFor="group_id">
                   <span className="label-text text-base font-semibold">
-                    Group
+                    Groups
                   </span>
                 </label>
                 <select
@@ -133,7 +133,7 @@ const EditUserModal = ({ groups, selectedRow }) => {
               <div className="form-control w-full">
                 <label className="label" htmlFor="role">
                   <span className="label-text text-base font-semibold">
-                    Role
+                    Roles
                   </span>
                 </label>
                 <select
@@ -164,8 +164,8 @@ const EditUserModal = ({ groups, selectedRow }) => {
                   formData.get("group_id"),
                   formData.get("role")
                 );
-                  const newUsesr = await editUser(selectedRow?.id, formData);
-                  window.edit_modal.close();
+                const newUsesr = await editUser(selectedRow?.id, formData);
+                window.edit_modal.close();
               }}
               className="btn my-4 py-1 px-6 normal-case bg-green-500 hover:bg-green-600 text-white"
             >

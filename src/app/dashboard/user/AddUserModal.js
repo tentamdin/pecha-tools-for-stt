@@ -3,9 +3,26 @@
 import React, { useRef } from "react";
 import { createGroup } from "@/model/group";
 import { createUser } from "@/model/user";
+import Select from "@/components/Select";
 
 const AddUserModal = ({ groups }) => {
   const ref = useRef(null);
+
+  const roles = [
+    {
+      id: "TRANSCRIBER",
+      name: "Transcriber",
+    },
+    {
+      name: "Reviewer",
+      id: "REVIEWER",
+    },
+    {
+      name: "Final Reviewer",
+      id: "FINAL_REVIEWER",
+    },
+  ];
+
   return (
     <>
       <dialog id="add_modal" className="modal">
@@ -53,48 +70,8 @@ const AddUserModal = ({ groups }) => {
                 className="input input-bordered w-full"
               />
             </div>
-            <div className="form-control w-full">
-              <label className="label" htmlFor="group_id">
-                <span className="label-text text-base font-semibold">
-                  Group
-                </span>
-              </label>
-              <select
-                id="group_id"
-                name="group_id"
-                className="select select-bordered overflow-y-scroll"
-                required
-              >
-                <option value="">Select group</option>
-                {groups.map((group) => (
-                  <option key={group.id} value={group.id}>
-                    {group.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="form-control w-full">
-              <label className="label" htmlFor="role">
-                <span className="label-text text-base font-semibold">Role</span>
-              </label>
-              <select
-                id="role"
-                name="role"
-                className="select select-bordered"
-                required
-              >
-                <option value="">Select role</option>
-                <option key="transcriber" value="TRANSCRIBER">
-                  Transcriber
-                </option>
-                <option key="reviewer" value="REVIEWER">
-                  Reviewer
-                </option>
-                <option key="final_reviewer" value="FINAL_REVIEWER">
-                  Final reviewer
-                </option>
-              </select>
-            </div>
+            <Select title="group_id" label="Groups" options={groups} />
+            <Select title="role" label="Roles" options={roles} />
           </div>
           <button
             type="submit"
