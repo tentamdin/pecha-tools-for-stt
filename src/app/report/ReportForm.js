@@ -4,8 +4,8 @@ import Select from "@/components/Select";
 import { generateUserReportByGroup } from "@/model/user";
 import React, { useEffect, useRef, useState } from "react";
 
-const ReportForm = ({ options, title, label, setUsers }) => {
-  const [selectedOption, setSelectedOption] = useState("");
+const ReportForm = ({ id, options, title, label, setList, generateReport }) => {
+  const [selectedOption, setSelectedOption] = useState(id ? id : "");
   const [fromDate, setFromDate] = useState(""); // State for "From" date
   const [toDate, setToDate] = useState(""); // State for "To" date
   const ref = useRef(null);
@@ -33,12 +33,8 @@ const ReportForm = ({ options, title, label, setUsers }) => {
   }, [toDate, fromDate, selectedOption]);
 
   const getUserReportByGroup = async () => {
-    const usersOfGroup = await generateUserReportByGroup(
-      selectedOption,
-      fromDate,
-      toDate
-    );
-    setUsers(usersOfGroup);
+    const usersOfGroup = await generateReport(selectedOption, fromDate, toDate);
+    setList(usersOfGroup);
   };
 
   return (
