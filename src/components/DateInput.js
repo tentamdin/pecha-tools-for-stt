@@ -1,6 +1,6 @@
 import React from "react";
 
-const DateInput = ({ label }) => {
+const DateInput = ({ label, selectedDate, handleDateChange }) => {
   return (
     <div className="form-control max-w-xs">
       <label className="label" htmlFor={label}>
@@ -10,6 +10,8 @@ const DateInput = ({ label }) => {
         name={label}
         type="date"
         className="input input-bordered max-w-xs"
+        value={selectedDate}
+        onChange={handleDateChange}
       />
     </div>
   );

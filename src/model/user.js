@@ -81,3 +81,152 @@ export const editUser = async (id, formData) => {
     throw new Error(error);
   }
 };
+
+export const getUsersByGroup = async (groupId) => {
+  try {
+    const users = await prisma.user.findMany({
+      where: {
+        group_id: parseInt(groupId),
+        role: "TRANSCRIBER",
+      },
+      include: {
+        transcriber_task: true,
+        reviewer_task: true,
+        final_reviewer_task: true,
+      },
+    });
+    return users;
+  } catch (error) {
+    console.error("Error getting users by group:", error);
+    throw new Error(error);
+  }
+};
+
+export const generateUserReportByGroup = async (groupId, fromDate, toDate) => {
+  console.log(
+    "when a group is selected and getUsersByGroup called",
+    groupId,
+    fromDate,
+    toDate
+  );
+  try {
+    const users = await getUsersByGroup(groupId);
+    revalidatePath("/report/group");
+    const usersReport = generateUserTaskReport(users, fromDate, toDate);
+    return usersReport;
+  } catch (error) {
+    console.error("Error getting users by group:", error);
+    throw new Error(error);
+  }
+};
+
+/**
+ * Generates a report of user task statistics.
+ * @param {Array} users - An array of user objects.
+ * @returns {Array} - An array of user objects with task statistics.
+ */
+export const generateUserTaskReport = async (users, fromDate, toDate) => {
+  console.log("generateUserTaskReport", fromDate, toDate);
+  const userList = [];
+  let filteredTasks = [];
+
+  for (const user of users) {
+    const { id, name, transcriber_task } = user;
+    filteredTasks = transcriber_task;
+
+    const userObj = {
+      id,
+      name,
+      noSubmitted: 0,
+      noReviewed: 0,
+      reviewedMins: 0,
+      syllableCount: 0,
+    };
+
+    if (fromDate && toDate) {
+      filteredTasks = filterTasksByDateRange(
+        user.transcriber_task,
+        fromDate,
+        toDate
+      );
+    }
+
+    const userStatistics = generateUserStatistics(userObj, filteredTasks);
+    userList.push(userStatistics);
+  }
+
+  console.log("Generated User Task Statistics Report:", userList);
+  return userList;
+};
+
+// Generate user task statistics
+const generateUserStatistics = (userObj, filteredTasks) => {
+  for (const task of filteredTasks) {
+    if (
+      task.state === "submitted" ||
+      task.state === "accepted" ||
+      task.state === "finalised"
+    ) {
+      userObj.noSubmitted++;
+    }
+    if (task.state === "accepted" || task.state === "finalised") {
+      userObj.noReviewed++;
+      const mins = calculateReviewedMins(task);
+      userObj.reviewedMins = userObj.reviewedMins + parseFloat(mins);
+    }
+  }
+  return userObj;
+};
+
+// Filter tasks within a date range
+const filterTasksByDateRange = (tasks, fromDate, toDate) => {
+  console.log("filterTasksByDateRange called", fromDate, toDate);
+  const isoFromDate = new Date(fromDate);
+  const isoToDate = new Date(toDate);
+
+  const filteredTasks = tasks.filter((task) => {
+    const submittedAt = task.submitted_at;
+    // Convert the dates to timestamps for comparison
+    const submittedAtTimestamp = submittedAt?.getTime();
+    const fromDateTimestamp = isoFromDate?.getTime();
+    const toDateTimestamp = isoToDate?.getTime();
+    return (
+      fromDateTimestamp <= submittedAtTimestamp &&
+      submittedAtTimestamp <= toDateTimestamp
+    );
+  });
+  // console.log("filteredTasks", filteredTasks);
+  return filteredTasks;
+};
+
+const calculateReviewedMins = (task) => {
+  const { file_name } = task;
+
+  if (typeof file_name !== "string") {
+    console.log("Invalid file_name. Expected a string.");
+    return null; // or handle the error as needed
+  }
+
+  // Regular expression pattern to match "start_to_end"
+  const regexPattern = /(\d+)_to_(\d+)/;
+
+  const match = file_name.match(regexPattern);
+
+  if (match) {
+    const [, startTimeStr, endTimeStr] = match; // Use named variables
+    const startTime = parseInt(startTimeStr);
+    const endTime = parseInt(endTimeStr);
+
+    if (!isNaN(startTime) && !isNaN(endTime)) {
+      const timeInSeconds = (endTime - startTime) / 1000;
+      const formattedTime = timeInSeconds.toFixed(2) + "s";
+      return formattedTime;
+    } else {
+      console.log("Invalid time values.");
+    }
+  } else {
+    console.log("Input string does not match the expected format.");
+  }
+
+  return null; // Return null for cases with errors
+};
