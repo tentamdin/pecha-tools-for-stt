@@ -111,7 +111,6 @@ export const generateUserReportByGroup = async (groupId, fromDate, toDate) => {
   );
   try {
     const users = await getUsersByGroup(groupId);
-    revalidatePath("/report/group");
     const usersReport = generateUserTaskReport(users, fromDate, toDate);
     return usersReport;
   } catch (error) {
@@ -171,7 +170,7 @@ const generateUserStatistics = (userObj, filteredTasks) => {
     }
     if (task.state === "accepted" || task.state === "finalised") {
       userObj.noReviewed++;
-      const mins = calculateReviewedMins(task);
+      const mins = calculateAudioMinutes(task);
       userObj.reviewedMins = userObj.reviewedMins + parseFloat(mins);
     }
   }
@@ -199,7 +198,7 @@ const filterTasksByDateRange = (tasks, fromDate, toDate) => {
   return filteredTasks;
 };
 
-const calculateReviewedMins = (task) => {
+export const calculateAudioMinutes = (task) => {
   const { file_name } = task;
 
   if (typeof file_name !== "string") {

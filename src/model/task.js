@@ -2,6 +2,7 @@
 
 import prisma from "@/lib/db";
 import { revalidatePath } from "next/cache";
+import { calculateAudioMinutes } from "./user";
 
 const fs = require("fs");
 const csvParser = require("csv-parser");
@@ -83,3 +84,38 @@ export async function createTasksFromCSV(fileData, formData) {
 //       console.log("Tasks created successfully");
 //     });
 // }
+
+export const getUserSpecificTasks = async (id, fromDate, toDate) => {
+  console.log("id", id, fromDate, toDate);
+  let userTaskList;
+  try {
+    if (fromDate && toDate) {
+      userTaskList = await prisma.task.findMany({
+        where: {
+          transcriber_id: parseInt(id),
+          state: { in: ["submitted", "accepted", "finalised"] },
+          submitted_at: {
+            gte: new Date(fromDate).toISOString(),
+            lte: new Date(toDate).toISOString(),
+          },
+        },
+      });
+    } else {
+      userTaskList = await prisma.task.findMany({
+        where: {
+          transcriber_id: parseInt(id),
+          state: { in: ["submitted", "accepted", "finalised"] },
+        },
+      });
+    }
+    console.log("userTaskList", userTaskList);
+    for (const task of userTaskList) {
+      const mins = calculateAudioMinutes(task);
+      // Add the 'audio_duration' property to the task
+      task.audio_duration = mins;
+    }
+    return userTaskList;
+  } catch (error) {
+    throw new Error(error);
+  }
+};

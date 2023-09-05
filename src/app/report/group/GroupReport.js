@@ -1,6 +1,8 @@
 "use client";
 import React, { useState } from "react";
 import ReportForm from "../ReportForm";
+import Link from "next/link";
+import { generateUserReportByGroup } from "@/model/user";
 
 const GroupReport = ({ groups }) => {
   const [users, setUsers] = useState([]);
@@ -9,9 +11,10 @@ const GroupReport = ({ groups }) => {
     <>
       <ReportForm
         options={groups}
-        setUsers={setUsers}
+        setList={setUsers}
         title="group_id"
         label="Groups"
+        generateReport={generateUserReportByGroup}
       />
       <div className="flex justify-center items-center mt-10">
         <div className="overflow-x-auto shadow-md sm:rounded-lg w-11/12 md:w-4/5 max-h-[80vh]">
@@ -29,7 +32,9 @@ const GroupReport = ({ groups }) => {
             <tbody>
               {users.map((user) => (
                 <tr key={user.id}>
-                  <td>{user.name}</td>
+                  <td>
+                    <Link href={`/report/user/${user.id}`}>{user.name}</Link>
+                  </td>
                   <td>{user.noSubmitted}</td>
                   <td>{user.noReviewed}</td>
                   <td>{user.reviewedMins}</td>
