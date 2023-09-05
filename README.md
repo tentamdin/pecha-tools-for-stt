@@ -44,11 +44,6 @@ set Environment variables as:
 
 - DATABASE_URL
 
-for aws a3 buckets:
-
-- ACCESS_KEY
-- SECRET_ACCESS_KEY
-
 <!-- This section must link to the docs which are in the root of the repository in /docs -->
 
 ## Owners
