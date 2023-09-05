@@ -12,7 +12,7 @@
     "seed": "node prisma/seed.js"
   },
   "dependencies": {
-    "@prisma/client": "^5.1.1",
+    "@prisma/client": "^5.2.0",
     "autoprefixer": "10.4.14",
     "aws-sdk": "^2.1430.0",
     "csv-parser": "^3.0.0",
@@ -29,6 +29,6 @@
   },
   "devDependencies": {
     "daisyui": "^3.6.3",
-    "prisma": "^5.1.1"
+    "prisma": "^5.2.0"
   }
 }
