@@ -1,8 +1,8 @@
 "use server";
 
-import prisma from "@/lib/db";
+import prisma from "@/service/db";
 
-const  ASSIGN_TASKS = 5;
+const ASSIGN_TASKS = 5;
 //get user detail if exist
 export const getUserDetails = async (username) => {
   try {
@@ -12,7 +12,7 @@ export const getUserDetails = async (username) => {
       },
     });
     if (userData === null) {
-      throw new Error("No user found! Please try another.");
+      throw new Error("please log in to it with ?session={username}.");
     }
     return userData;
   } catch (error) {

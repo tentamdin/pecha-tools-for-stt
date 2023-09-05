@@ -1,6 +1,6 @@
 "use server";
 
-import prisma from "@/lib/db";
+import prisma from "@/service/db";
 import { revalidatePath } from "next/cache";
 
 export const getAllUser = async () => {

@@ -1,13 +1,17 @@
 "use client";
 
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { createGroup } from "@/model/group";
 import { createUser } from "@/model/user";
 import Select from "@/components/Select";
 
 const AddUserModal = ({ groups }) => {
   const ref = useRef(null);
+  const [selectedOption, setSelectedOption] = useState("");
 
+  const handleOptionChange = async (event) => {
+    setSelectedOption(event.target.value);
+  };
   const roles = [
     {
       id: "TRANSCRIBER",
@@ -70,8 +74,20 @@ const AddUserModal = ({ groups }) => {
                 className="input input-bordered w-full"
               />
             </div>
-            <Select title="group_id" label="Groups" options={groups} />
-            <Select title="role" label="Roles" options={roles} />
+            <Select
+              title="group_id"
+              label="Groups"
+              options={groups}
+              selectedOption={selectedOption}
+              handleOptionChange={handleOptionChange}
+            />
+            <Select
+              title="role"
+              label="Roles"
+              options={roles}
+              selectedOption={selectedOption}
+              handleOptionChange={handleOptionChange}
+            />
           </div>
           <button
             type="submit"
