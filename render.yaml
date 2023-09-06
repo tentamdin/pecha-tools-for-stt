@@ -6,7 +6,7 @@ services:
     # Update the following line with your Strapi GitHub repo
     repo: https://github.com/tentamdin/stt-mvp
     branch: main
-    buildCommand: npm run build
+    buildCommand: npm ci && npm run build
     startCommand: npx prisma migrate deploy && npm run start
     envVars:
       - key: NODE_VERSION
