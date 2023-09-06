@@ -2,7 +2,7 @@
 
 import prisma from "@/service/db";
 import { revalidatePath } from "next/cache";
-import { calculateAudioMinutes } from "./user";
+import { calculateAudioMinutes, splitIntoSyllables } from "./user";
 
 const fs = require("fs");
 const csvParser = require("csv-parser");
@@ -111,8 +111,21 @@ export const getUserSpecificTasks = async (id, fromDate, toDate) => {
     console.log("userTaskList", userTaskList);
     for (const task of userTaskList) {
       const mins = calculateAudioMinutes(task);
-      // Add the 'audio_duration' property to the task
       task.audio_duration = mins;
+
+      if (
+        task.state === "submitted" ||
+        task.state === "accepted" ||
+        task.state === "finalised"
+      ) {
+        const { transcript } = task;
+        task.transcriptSyllableCount = splitIntoSyllables(transcript).length;
+      }
+      if (task.state === "accepted" || task.state === "finalised") {
+        const { reviewed_transcript } = task;
+        task.reviewedSyllableCount =
+          splitIntoSyllables(reviewed_transcript).length;
+      }
     }
     return userTaskList;
   } catch (error) {
