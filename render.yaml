@@ -2,7 +2,7 @@ services:
   - type: web
     name: pecha-stt
     env: node
-    plan: starter
+    plan: free
     # Update the following line with your Strapi GitHub repo
     repo: https://github.com/tentamdin/stt-mvp
     branch: main
@@ -20,4 +20,4 @@ services:
 
 databases:
   - name: pecha-stt-pg
-    plan: starter
+    plan: free
