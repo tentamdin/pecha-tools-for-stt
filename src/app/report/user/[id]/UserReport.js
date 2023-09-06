@@ -73,8 +73,8 @@ const UserReport = ({ id, users }) => {
                   </td>
                   <td>{task.file_name}</td>
                   <td>{task.audio_duration}</td>
-                  <td>{task.audio_duration}</td>
-                  <td>{task.transcriber_id}</td>
+                  <td>{task.transcriptSyllableCount}</td>
+                  <td>{task.reviewedSyllableCount}</td>
                 </tr>
               ))}
             </tbody>

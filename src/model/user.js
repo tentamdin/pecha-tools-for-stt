@@ -19,7 +19,6 @@ export const getAllUser = async () => {
 };
 
 export const createUser = async (formData) => {
-  console.log("createuser called", formData);
   const name = formData.get("name");
   const email = formData.get("email");
   const groupId = formData.get("group_id");
@@ -57,7 +56,6 @@ export const deleteUser = async (id) => {
 };
 
 export const editUser = async (id, formData) => {
-  console.log("createuser called", formData);
   const name = formData.get("name");
   const email = formData.get("email");
   const groupId = formData.get("group_id");
@@ -125,7 +123,6 @@ export const generateUserReportByGroup = async (groupId, fromDate, toDate) => {
  * @returns {Array} - An array of user objects with task statistics.
  */
 export const generateUserTaskReport = async (users, fromDate, toDate) => {
-  console.log("generateUserTaskReport", fromDate, toDate);
   const userList = [];
   let filteredTasks = [];
 
@@ -170,11 +167,26 @@ const generateUserStatistics = (userObj, filteredTasks) => {
     }
     if (task.state === "accepted" || task.state === "finalised") {
       userObj.noReviewed++;
+
       const mins = calculateAudioMinutes(task);
       userObj.reviewedMins = userObj.reviewedMins + parseFloat(mins);
+
+      //go through each task and find the reviewed transcript and calculate the syllable count
+      const { reviewed_transcript } = task;
+      const syllableCount = splitIntoSyllables(reviewed_transcript).length;
+      console.log("syllableCount", syllableCount);
+      userObj.syllableCount = userObj.syllableCount + syllableCount;
     }
   }
   return userObj;
+};
+
+export const splitIntoSyllables = (transcript) => {
+  // Split the text into syllables using regular expressions
+  const syllables = transcript.split(/[\\s་།]+/);
+  // Filter out empty syllables
+  const filteredSplit = syllables.filter((s) => s !== "");
+  return filteredSplit;
 };
 
 // Filter tasks within a date range
