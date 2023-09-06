@@ -32,7 +32,7 @@ const TaskDashbooard = ({ tasks, groups }) => {
             </thead>
             <tbody className="">
               {tasks?.map((task) => (
-                <tr className="bg-white border-b">
+                <tr key={task.id} className="bg-white border-b">
                   <th
                     scope="row"
                     className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"
