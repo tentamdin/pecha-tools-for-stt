@@ -21,7 +21,7 @@ const AddGroupModal = () => {
               ✕
             </button>
           </div>
-          <div className="form-control w-full max-w-xs">
+          <div className="form-control w-full sm:w-3/4">
             <label className="label" htmlFor="name">
               <span className="label-text text-base font-semibold ">
                 Group Name
@@ -33,7 +33,7 @@ const AddGroupModal = () => {
               name="name"
               placeholder="name"
               required
-              className="input input-bordered w-full max-w-xs"
+              className="input input-bordered"
             />
           </div>
           <button
@@ -44,9 +44,9 @@ const AddGroupModal = () => {
               const newGroup = await createGroup(formData);
               window.add_modal.close();
             }}
-            className="btn my-4 py-1 px-6 normal-case bg-green-500 hover:bg-green-600 text-white"
+            className="btn btn-accent w-full sm:w-1/5 my-4 py-1 px-6 capitalize"
           >
-            Add
+            create
           </button>
         </form>
       </dialog>

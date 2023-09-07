@@ -95,9 +95,9 @@ const EditGroupModal = ({ selectedRow }) => {
               const edited_Group = await editGroup(selectedRow?.id, formData);
               window.edit_modal.close();
             }}
-            className="btn my-4 py-1 px-6 normal-case bg-green-500 hover:bg-green-600 text-white"
+            className="btn btn-accent w-full sm:w-1/5 my-4 py-1 px-6 capitalize"            
           >
-            Edit
+            update
           </button>
         </form>
       </dialog>

@@ -2,7 +2,7 @@ import React from "react";
 
 const DateInput = ({ label, selectedDate, handleDateChange }) => {
   return (
-    <div className="form-control max-w-xs">
+    <div className="form-control w-80 sm:w-fit">
       <label className="label" htmlFor={label}>
         <span className="label-text">{label}:</span>
       </label>
