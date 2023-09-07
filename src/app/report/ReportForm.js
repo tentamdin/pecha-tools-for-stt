@@ -6,41 +6,43 @@ import React, { useEffect, useRef, useState } from "react";
 
 const ReportForm = ({ id, options, title, label, setList, generateReport }) => {
   const [selectedOption, setSelectedOption] = useState(id ? id : "");
-  const [fromDate, setFromDate] = useState(""); // State for "From" date
-  const [toDate, setToDate] = useState(""); // State for "To" date
+  const [dates, setDates] = useState({ from: "", to: "" });
   const ref = useRef(null);
+
+  useEffect(() => {
+    if (id) {
+      async function getUserReportByGroup() {
+        const usersOfGroup = await generateReport(id, dates);
+        setList(usersOfGroup);
+      }
+      getUserReportByGroup();
+      console.log("id", id);
+    }
+  }, []);
 
   const handleOptionChange = async (event) => {
     setSelectedOption(event.target.value);
-  };
-
-  const handleFromDateChange = (event) => {
-    setFromDate(event.target.value);
-    console.log("from:", event.target.value);
-  };
-
-  const handleToDateChange = (event) => {
-    setToDate(event.target.value);
-    console.log("to:", event.target.value);
-  };
-
-  useEffect(() => {
-    // When a group is selected
-    if (selectedOption) {
-      console.log("when a group is selected", selectedOption, fromDate, toDate);
-      getUserReportByGroup();
-    }
-  }, [toDate, fromDate, selectedOption]);
-
-  const getUserReportByGroup = async () => {
-    const usersOfGroup = await generateReport(selectedOption, fromDate, toDate);
+    const usersOfGroup = await generateReport(event.target.value, dates);
     setList(usersOfGroup);
+  };
+
+  const handleDateChange = async (event) => {
+    setDates((prev) => ({ ...prev, [event.target.name]: event.target.value }));
+    if (selectedOption) {
+      console.log("dates", dates, "and", dates.from, dates.to);
+      const usersOfGroup = await generateReport(selectedOption, {
+        ...dates,
+        [event.target.name]: event.target.value,
+      });
+      setList(usersOfGroup);
+    }
   };
 
   return (
     <>
       <form
         ref={ref}
+        onChange={(e) => console.log("form changed", e.target.value)}
         className="flex flex-col md:flex-row justify-around items-center md:items-end space-y-5 space-x-0 md:space-y-0 md:space-x-10"
       >
         <Select
@@ -52,14 +54,14 @@ const ReportForm = ({ id, options, title, label, setList, generateReport }) => {
         />
         <div className="flex flex-col md:flex-row gap-2 md:gap-6">
           <DateInput
-            label="From"
-            selectedDate={fromDate}
-            handleDateChange={handleFromDateChange}
+            label="from"
+            selectedDate={dates.from}
+            handleDateChange={handleDateChange}
           />
           <DateInput
-            label="To"
-            selectedDate={toDate}
-            handleDateChange={handleToDateChange}
+            label="to"
+            selectedDate={dates.to}
+            handleDateChange={handleDateChange}
           />
         </div>
       </form>

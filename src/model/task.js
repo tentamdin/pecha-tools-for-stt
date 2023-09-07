@@ -85,11 +85,13 @@ export async function createTasksFromCSV(fileData, formData) {
 //     });
 // }
 
-export const getUserSpecificTasks = async (id, fromDate, toDate) => {
-  console.log("id", id, fromDate, toDate);
+export const getUserSpecificTasks = async (id, dates) => {
+  console.log("id", id, dates);
+  const { from: fromDate, to: toDate } = dates;
   let userTaskList;
   try {
     if (fromDate && toDate) {
+      console.log("when both are present", fromDate, toDate);
       userTaskList = await prisma.task.findMany({
         where: {
           transcriber_id: parseInt(id),
@@ -101,6 +103,7 @@ export const getUserSpecificTasks = async (id, fromDate, toDate) => {
         },
       });
     } else {
+      console.log("when only one is present", fromDate, toDate);
       userTaskList = await prisma.task.findMany({
         where: {
           transcriber_id: parseInt(id),
