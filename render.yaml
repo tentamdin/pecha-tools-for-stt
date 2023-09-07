@@ -4,7 +4,7 @@ services:
     env: node
     plan: free
     # Update the following line with your Strapi GitHub repo
-    repo: https://github.com/tentamdin/stt-mvp
+    repo: https://github.com/tentamdin/pecha-tools-for-stt
     branch: main
     buildCommand: npm ci && npm run build
     startCommand: npx prisma migrate deploy && npm run start
