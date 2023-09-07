@@ -15,20 +15,22 @@ const AudioTranscript = ({ tasks, userDetail }) => {
   const [anyTask, setAnyTask] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const { id: userId, group_id: groupId, role } = userDetail;
+  const currentTimeRef = useRef(null);
 
   function getLastTaskIndex() {
     return taskList.length != 0 ? taskList?.length - 1 : 0;
   }
   useEffect(() => {
     let isMounted = true;
+    // Assign a value to currentTimeRef.current
+    currentTimeRef.current = new Date().toISOString();
+    console.log("Current Time:", currentTimeRef.current);
     console.log("user details", userDetail, "array of task", taskList);
     if (taskList?.length) {
       setAnyTask(true);
       setIsLoading(false);
-      console.log("last index", getLastTaskIndex());
       switch (role) {
         case "TRANSCRIBER":
-          console.log("inside switch 1", taskList[index]?.transcript === null);
           taskList[index]?.transcript != null
             ? setTranscript(taskList[index]?.transcript)
             : setTranscript(taskList[index]?.inference_transcript);
@@ -71,11 +73,17 @@ const AudioTranscript = ({ tasks, userDetail }) => {
   const speedRate = [0.5, 0.75, 1, 1.25, 1.5, 2];
 
   const updateTaskAndIndex = async (action, transcript, task) => {
-    console.log("in updateFileAndIndex");
-    const { id } = task;
-    console.log("task id", id, "role", role);
     try {
-      const response = await updateTask(action, id, transcript, task, role);
+      const { id } = task;
+
+      const response = await updateTask(
+        action,
+        id,
+        transcript,
+        task,
+        role,
+        currentTimeRef.current
+      );
       console.log("response", response);
       if (getLastTaskIndex() != index) {
         console.log(" this is not  last task in task list ", index);
@@ -85,6 +93,9 @@ const AudioTranscript = ({ tasks, userDetail }) => {
           ? setTranscript(taskList[index + 1].transcript)
           : setTranscript(taskList[index + 1].reviewed_transcript);
         setIndex(index + 1);
+        if (action === "submit") {
+          currentTimeRef.current = new Date().toISOString();
+        }
       } else {
         console.log(
           " this is the last task in task list, assigning more task ",
