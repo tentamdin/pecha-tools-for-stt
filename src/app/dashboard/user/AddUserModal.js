@@ -103,9 +103,9 @@ const AddUserModal = ({ groups }) => {
               const newUsesr = await createUser(formData);
               window.add_modal.close();
             }}
-            className="btn my-4 py-1 px-6 normal-case bg-green-500 hover:bg-green-600 text-white"
+            className="btn btn-accent w-full sm:w-1/5 my-4 py-1 px-6 capitalize"
           >
-            Add
+            create
           </button>
         </form>
       </dialog>
