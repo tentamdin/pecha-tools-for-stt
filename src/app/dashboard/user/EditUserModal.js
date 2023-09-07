@@ -6,13 +6,13 @@ const EditUserModal = ({ groups, selectedRow }) => {
   const [groupId, setGroupId] = useState("");
   const [role, setRole] = useState("");
   const [isLoading, setIsLoading] = useState(true);
-  const userGroupId = selectedRow?.group_id;
-  const userRole = selectedRow?.role;
 
   const ref = useRef(null);
 
   useEffect(() => {
     let isMounted = true;
+    const userGroupId = selectedRow?.group_id;
+    const userRole = selectedRow?.role;
     if (selectedRow !== null) {
       setGroupId(userGroupId);
       setRole(userRole);

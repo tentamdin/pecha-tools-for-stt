@@ -100,13 +100,13 @@ export const getUsersByGroup = async (groupId) => {
   }
 };
 
-export const generateUserReportByGroup = async (groupId, fromDate, toDate) => {
+export const generateUserReportByGroup = async (groupId, dates) => {
   console.log(
     "when a group is selected and getUsersByGroup called",
     groupId,
-    fromDate,
-    toDate
+    dates
   );
+  const { from: fromDate, to: toDate } = dates;
   try {
     const users = await getUsersByGroup(groupId);
     const usersReport = generateUserTaskReport(users, fromDate, toDate);

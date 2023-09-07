@@ -17,7 +17,7 @@ export const getUserDetails = async (username) => {
     return userData;
   } catch (error) {
     console.log("error", error);
-    throw new Error("No user found! Please try another");
+    throw new Error("No user found! Please try another with correct username.");
   }
 };
 
@@ -32,7 +32,7 @@ export const getUserTask = async (username) => {
     // assign some tasks
     const assingedTasks = await assignTasks(groupId, userId, role);
     console.log("assignedTask", assingedTasks);
-    return Object.values(assingedTasks);
+    return assingedTasks;
   } else {
     console.log("userTasks", userTasks.length);
     return userTasks;
