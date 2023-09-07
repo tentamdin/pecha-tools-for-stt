@@ -1,5 +1,6 @@
 "use server";
 
+import { formatTime } from "@/lib/formatTime";
 import prisma from "@/service/db";
 
 const ASSIGN_TASKS = 5;
@@ -27,11 +28,11 @@ export const getUserTask = async (username) => {
   const { id: userId, group_id: groupId, role } = userData;
   console.log("userId", userId, "groupId", groupId, "role", role);
   const userTasks = await getAssignedTasks(groupId, userId, role);
-  console.log("user already assigned task", userTasks);
+  // console.log("user already assigned task", userTasks);
   if (userTasks.length == 0) {
     // assign some tasks
     const assingedTasks = await assignTasks(groupId, userId, role);
-    console.log("assignedTask", assingedTasks);
+    // console.log("assignedTask", assingedTasks);
     return assingedTasks;
   } else {
     console.log("userTasks", userTasks.length);
@@ -142,7 +143,7 @@ export const assignTasks = async (groupId, userId, role) => {
             },
             take: ASSIGN_TASKS,
           });
-          console.log("unassignedTasks are", unassignedTasks);
+          // console.log("unassignedTasks are", unassignedTasks);
 
           if (unassignedTasks.length === 0) {
             return (assignedTasks = unassignedTasks);
@@ -163,7 +164,7 @@ export const assignTasks = async (groupId, userId, role) => {
               throw new Error("No task found for TRANSCRIBER!.");
             }
             assignedTasks = await getAssignedTasks(groupId, userId, role);
-            console.log("assignedTasks", assignedTasks);
+            // console.log("assignedTasks", assignedTasks);
             return assignedTasks;
           }
         } catch (error) {
@@ -190,7 +191,7 @@ export const assignTasks = async (groupId, userId, role) => {
             },
             take: ASSIGN_TASKS,
           });
-          console.log("unassignedTasks are", unassignedTasks);
+          // console.log("unassignedTasks are", unassignedTasks);
 
           if (unassignedTasks.length === 0) {
             return (assignedTasks = unassignedTasks);
@@ -314,9 +315,29 @@ export const changeTaskState = (task, role, action) => {
 };
 
 // update the files
-export const updateTask = async (action, id, transcript, task, role) => {
-  console.log("update task", action, id, transcript, task, role);
+export const updateTask = async (
+  action,
+  id,
+  transcript,
+  task,
+  role,
+  currentTime
+) => {
+  console.log("update task", action, id, transcript, task, role, currentTime);
   const changeState = await changeTaskState(task, role, action);
+  let duration = null;
+  if (
+    changeState.state === "submitted" ||
+    changeState.state === "accepted" ||
+    changeState.state === "finalised"
+  ) {
+    // convert iso date to timestamp
+    let startTime = Date.parse(currentTime);
+    let endTime = Date.now();
+    let timeDiff = endTime - startTime;
+    duration = formatTime(timeDiff);
+    console.log("duration", duration, typeof duration);
+  }
   console.log("changeState", changeState);
   switch (role) {
     case "TRANSCRIBER":
@@ -329,6 +350,7 @@ export const updateTask = async (action, id, transcript, task, role) => {
             state: changeState.state,
             transcript: changeState.state === "trashed" ? null : transcript,
             submitted_at: new Date().toISOString(),
+            duration: duration,
           },
         });
         return updatedFile;
@@ -350,6 +372,7 @@ export const updateTask = async (action, id, transcript, task, role) => {
                 ? null
                 : transcript,
             reviewed_at: new Date().toISOString(),
+            duration: duration,
           },
         });
         return updatedFile;
@@ -371,6 +394,7 @@ export const updateTask = async (action, id, transcript, task, role) => {
                 ? null
                 : transcript,
             finalised_reviewed_at: new Date().toISOString(),
+            duration: duration,
           },
         });
         return updatedFile;

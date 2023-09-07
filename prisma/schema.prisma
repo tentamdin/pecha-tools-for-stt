@@ -50,6 +50,7 @@ model Task {
   submitted_at          DateTime?
   reviewed_at           DateTime?
   finalised_reviewed_at DateTime?
+  duration              String?
 
   @@index([final_reviewer_id], map: "task_final_reviewer_id_foreign")
   @@index([group_id], map: "task_group_id_foreign")
