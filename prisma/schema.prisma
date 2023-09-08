@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -32,7 +32,7 @@ enum State {
 model Task {
   id                    Int       @id @default(autoincrement())
   group_id              Int
-  group                 Group     @relation(fields: [group_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "task_group_id_foreign")
+  group                 Group     @relation(fields: [group_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   state                 State     @default(imported)
   inference_transcript  String?   @db.VarChar(255)
   transcript            String?   @db.VarChar(255)
@@ -41,21 +41,16 @@ model Task {
   file_name             String    @db.VarChar(255)
   url                   String?   @db.Text
   transcriber_id        Int?
-  transcriber           User?     @relation("TranscriberTasks", fields: [transcriber_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "task_transcriber_id_foreign")
+  transcriber           User?     @relation("TranscriberTasks", fields: [transcriber_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   reviewer_id           Int?
-  reviewer              User?     @relation("ReviewerTasks", fields: [reviewer_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "task_reviewer_id_foreign")
+  reviewer              User?     @relation("ReviewerTasks", fields: [reviewer_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   final_reviewer_id     Int?
-  final_reviewer        User?     @relation("FinalReviewerTasks", fields: [final_reviewer_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "task_final_reviewer_id_foreign")
+  final_reviewer        User?     @relation("FinalReviewerTasks", fields: [final_reviewer_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   created_at            DateTime? @default(now())
   submitted_at          DateTime?
   reviewed_at           DateTime?
   finalised_reviewed_at DateTime?
   duration              String?
-
-  @@index([final_reviewer_id], map: "task_final_reviewer_id_foreign")
-  @@index([group_id], map: "task_group_id_foreign")
-  @@index([reviewer_id], map: "task_reviewer_id_foreign")
-  @@index([transcriber_id], map: "task_transcriber_id_foreign")
 }
 
 model User {
@@ -67,7 +62,5 @@ model User {
   transcriber_task    Task[]  @relation("TranscriberTasks")
   reviewer_task       Task[]  @relation("ReviewerTasks")
   final_reviewer_task Task[]  @relation("FinalReviewerTasks")
-  group               Group   @relation(fields: [group_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "user_group_id_foreign")
-
-  @@index([group_id], map: "user_group_id_foreign")
+  group               Group   @relation(fields: [group_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
