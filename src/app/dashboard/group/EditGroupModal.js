@@ -15,7 +15,8 @@ const EditGroupModal = ({ selectedRow }) => {
             <h3 className="font-bold text-lg">Edit Group</h3>
             <button
               className="btn btn-sm btn-circle btn-ghost"
-              onClick={() => {
+              onClick={(e) => {
+                e.preventDefault();
                 ref.current?.reset();
                 window.edit_modal.close();
               }}
@@ -95,7 +96,7 @@ const EditGroupModal = ({ selectedRow }) => {
               const edited_Group = await editGroup(selectedRow?.id, formData);
               window.edit_modal.close();
             }}
-            className="btn btn-accent w-full sm:w-1/5 my-4 py-1 px-6 capitalize"            
+            className="btn btn-accent w-full sm:w-1/5 my-4 py-1 px-6 capitalize"
           >
             update
           </button>

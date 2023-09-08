@@ -35,7 +35,8 @@ const AddUserModal = ({ groups }) => {
             <h3 className="font-bold text-lg">Create User</h3>
             <button
               className="btn btn-sm btn-circle btn-ghost"
-              onClick={() => {
+              onClick={(e) => {
+                e.preventDefault();
                 ref.current?.reset();
                 window.add_modal.close();
               }}
