@@ -55,6 +55,9 @@ export const getAssignedTasks = async (groupId, userId, role) => {
               state: "transcribing",
               transcriber_id: userId,
             },
+            orderBy: {
+              id: "asc",
+            },
           });
           if (assingedTasks === null) {
             throw new Error("No task found for TRANSCRIBER!.");
@@ -78,6 +81,9 @@ export const getAssignedTasks = async (groupId, userId, role) => {
             },
             include: {
               transcriber: true,
+            },
+            orderBy: {
+              id: "asc",
             },
           });
           if (assingedTasks === null) {
@@ -103,6 +109,9 @@ export const getAssignedTasks = async (groupId, userId, role) => {
             include: {
               transcriber: true,
               reviewer: true,
+            },
+            orderBy: {
+              id: "asc",
             },
           });
           if (assingedTasks === null) {
