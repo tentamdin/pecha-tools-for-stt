@@ -51,7 +51,8 @@ const EditUserModal = ({ groups, selectedRow }) => {
               <h3 className="font-bold text-lg">Edit User</h3>
               <button
                 className="btn btn-sm btn-circle btn-ghost"
-                onClick={() => {
+                onClick={(e) => {
+                  e.preventDefault();
                   ref.current?.reset();
                   window.edit_modal.close();
                 }}

@@ -13,7 +13,8 @@ const AddGroupModal = () => {
             <h3 className="font-bold text-lg">Create Group</h3>
             <button
               className="btn btn-sm btn-circle btn-ghost"
-              onClick={() => {
+              onClick={(e) => {
+                e.preventDefault();
                 ref.current?.reset();
                 window.add_modal.close();
               }}
@@ -31,7 +32,7 @@ const AddGroupModal = () => {
               id="name"
               type="text"
               name="name"
-              placeholder="name"
+              placeholder="Enter group name"
               required
               className="input input-bordered"
             />
