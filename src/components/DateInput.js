@@ -4,7 +4,9 @@ const DateInput = ({ label, selectedDate, handleDateChange }) => {
   return (
     <div className="form-control w-fit">
       <label className="label" htmlFor={label}>
-        <span className="label-text">{label}:</span>
+        <span className="label-text text-base font-semibold capitalize">
+          {label}
+        </span>
       </label>
       <input
         name={label}
